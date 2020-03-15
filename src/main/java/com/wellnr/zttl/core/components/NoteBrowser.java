@@ -25,8 +25,8 @@ public class NoteBrowser extends AnchorPane {
         AnchorPane.setLeftAnchor(sp, 0.0);
 
         sp.getItems().add(renderSection("OPEN", model.getOpenNotes()));
-        sp.getItems().add(renderSection("INBOX", model.getOpenNotes()));
-        sp.getItems().add(renderSection("ARCHIVE", model.getOpenNotes()));
+        sp.getItems().add(renderSection("INBOX", model.getInboxNotes()));
+        sp.getItems().add(renderSection("ARCHIVE", model.getArchivedNotes()));
         this.getStyleClass().add("zttl--note-browser");
         this.getChildren().add(sp);
     }
