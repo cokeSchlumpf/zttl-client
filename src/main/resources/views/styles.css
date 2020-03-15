@@ -1,0 +1,220 @@
+/*
+ * general
+ */
+.root {
+    -fx-font-family: 'IBM Plex Sans', sans-serif;
+    -fx-text-fill: #ffffff;
+}
+
+.split-pane-divider {
+    -fx-background-color: transparent;
+}
+
+.zttl--container,
+.zttl--container .content {
+    -fx-background-color: #333333;
+    -fx-border-width: 0;
+}
+
+.zttl--split-pane {
+    -fx-border-width: 0;
+    -fx-background-color: #1d1d1d;
+}
+
+.scroll-bar:horizontal ,
+.scroll-bar:vertical{
+    -fx-background-color: transparent;
+}
+
+.increment-button,
+.decrement-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0 0 0 0;
+}
+
+.mylistview .scroll-bar:horizontal .increment-button ,
+.mylistview .scroll-bar:horizontal .decrement-button {
+    -fx-background-color:transparent;
+    -fx-background-radius: 0em;
+    -fx-padding:0 0 10 0;
+
+}
+
+.scroll-bar:vertical .increment-button ,
+.scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0em;
+    -fx-padding:0 10 0 0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding: 0;
+}
+
+.scroll-bar:horizontal .track ,
+.scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+    -fx-border-color: none;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #373837;
+    -fx-background-insets: 0, 0, 0;
+    -fx-background-radius: 0em;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-max-width: 5px;
+}
+
+/*
+ * menu bar
+ */
+.menu,
+.menu-bar,
+.menu-item,
+.context-menu {
+    -fx-background-color: #252426;
+}
+
+.menu .label {
+    -fx-text-fill: #ffffff;
+}
+
+.menu:hover,
+.menu-item:hover {
+    -fx-background-color: #0b84ff;
+}
+
+/*
+ * side panel
+ */
+.zttl--sidepanel,
+.zttl--sidepanel .tab,
+.zttl--sidepanel .tab:selected {
+    -fx-background-color: #252426 !important;
+}
+
+.zttl--sidepanel .tab:selected .tab-label {
+    -fx-text-fill: #959695 !important;
+}
+
+.zttl--note-browser {
+    -fx-background-color: #252426;
+}
+
+.zttl--note-browser--section--title {
+    -fx-background-color: #373837;
+    -fx-text-fill: #ffffff;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0 0 0 0;
+    -fx-font-weight: bolder;
+}
+
+.zttl--note-browser--section--title .label {
+    -fx-padding: 5 10 5 10;
+}
+
+.zttl--note-browser--section,
+.zttl--note-browser--split-pane,
+.zttl--note-browser--section--scroll-pane,
+.zttl--note-browser--section--scroll-pane > .viewport,
+.zttl--note-browser--section--items {
+    -fx-background-color: #252426;
+    -fx-border-width: 0;
+}
+
+.zttl--note-item {
+    -fx-background-color: #252426;
+    -fx-padding: 5 10 5 10;
+}
+
+.zttl--note-item .zttl--note-title {
+    -fx-font-weight: bolder;
+    -fx-text-fill: #cbcccb;
+}
+
+.zttl--note-item .zttl--note-content {
+    -fx-text-fill: #959695;
+    -fx-font-size: 12;
+}
+
+.zttl--note-item:hover {
+    -fx-background-color: #333333;
+}
+
+/*
+ * status bar
+ */
+.zttl--statusbar {
+    -fx-background-color: #0b84ff;
+    -fx-border-width: 0;
+}
+
+.zttl--statusbar .zttl--label {
+    -fx-text-fill: #ffffff;
+}
+
+/*
+ * tab bars
+ */
+.tab-pane:top *.tab-header-area {
+    -fx-background-color: #252426;
+    -fx-background-insets: 0, 0 0 0 0;
+    -fx-padding: 0 0 0 0;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
+}
+
+.tab-pane .tab {
+    -fx-background-color: #333333;
+    -fx-border-width: 0;
+    -fx-focus-color: transparent;
+    -fx-padding: 10 10 10 10;
+}
+
+.tab-pane .tab:selected,
+.tab-pane .tab:focused {
+    -fx-background-color: #1d1d1d;
+    -fx-border-width: 0;
+    -fx-focus-color: transparent;
+}
+
+.tab-pane .tab-label {
+    -fx-text-fill: #959695;
+    -fx-padding: 0 10 0 0;
+    -fx-focus-color: transparent;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: #ffffff;
+    -fx-focus-color: transparent;
+}
+
+/*
+ * text area/ main editor
+ */
+.zttl--text-area {
+    -fx-text-fill: white;
+    -fx-font-family: 'IBM Plex Mono', monospace;
+    -fx-font-size: 16;
+    -fx-background-color: #1d1d1d;
+    -fx-border-width: 0;
+    -fx-border-style: none;
+
+    -fx-focus-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
+.zttl--text-area .content {
+    -fx-border-width: 0;
+    -fx-background-color: #1d1d1d;
+}
