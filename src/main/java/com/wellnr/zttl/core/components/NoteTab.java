@@ -11,14 +11,10 @@ public class NoteTab extends Tab {
     private final Note note;
 
     public NoteTab(Note note, Consumer<Note> onClose) {
-        TextArea ta = new TextArea();
-        ta.getStyleClass().addAll("zttl--text-area");
-        ta.setWrapText(true);
-        ta.setText(note.getContent().get());
-        ta.textProperty().bindBidirectional(note.getContent());
+        NoteEditor editor = new NoteEditor(note, onClose);
 
-        this.setContent(ta);
-        this.setText(note.getTitle().get());
+        this.setContent(editor);
+        this.textProperty().bind(note.getTitle());
         this.note = note;
 
         this.setOnClosed(event -> onClose.accept(note));

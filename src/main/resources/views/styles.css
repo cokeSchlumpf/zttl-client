@@ -191,6 +191,8 @@
     -fx-text-fill: #959695;
     -fx-padding: 0 10 0 0;
     -fx-focus-color: transparent;
+    -fx-pref-width: 150;
+    -fx-max-width: 150;
 }
 
 .tab-pane .tab:selected .tab-label {

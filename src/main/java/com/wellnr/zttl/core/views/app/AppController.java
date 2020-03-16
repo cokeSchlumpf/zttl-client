@@ -40,7 +40,8 @@ public class AppController {
         this.view = new AppView(
                 model,
                 this::onSelectedNoteChanged,
-                this::onNoteClosed);
+                this::onNoteClosed,
+                this::onOpenNote);
 
         openNotes.forEach(note -> note.getContent().addListener((observable, oldValue, newValue) -> {
             AppController.this.onNoteChanged(note, newValue);
@@ -69,6 +70,14 @@ public class AppController {
                 this.model.getWordCount().setValue(Optional.empty());
             }
         });
+    }
+
+    private void onOpenNote(Note note) {
+        if (!model.getOpenNotes().contains(note)) {
+            model.getOpenNotes().add(note);
+        } else {
+            model.getCurrentNote().setValue(Optional.of(note));
+        }
     }
 
     private void onSelectedNoteChanged(Note note) {

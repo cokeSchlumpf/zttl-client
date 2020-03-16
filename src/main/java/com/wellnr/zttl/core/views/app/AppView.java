@@ -1,17 +1,18 @@
 package com.wellnr.zttl.core.views.app;
 
-import com.wellnr.zttl.core.components.NoteItem;
-import com.wellnr.zttl.core.components.NoteTab;
 import com.wellnr.zttl.core.components.NoteBrowser;
+import com.wellnr.zttl.core.components.NoteTab;
 import com.wellnr.zttl.core.components.StatusBar;
-import com.wellnr.zttl.core.views.app.model.Note;
 import com.wellnr.zttl.core.views.app.model.App;
+import com.wellnr.zttl.core.views.app.model.Note;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class AppView extends BorderPane {
@@ -19,7 +20,8 @@ public class AppView extends BorderPane {
     public AppView(
             final App model,
             final Consumer<Note> onNoteChanged,
-            final Consumer<Note> onNoteClosed) {
+            final Consumer<Note> onNoteClosed,
+            final Consumer<Note> onOpenNote) {
 
         super();
 
@@ -47,7 +49,7 @@ public class AppView extends BorderPane {
             container.getStyleClass().addAll("zttl--sidepanel");
             container.setPrefWidth(200);
 
-            NoteBrowser noteBrowser = new NoteBrowser(model);
+            NoteBrowser noteBrowser = new NoteBrowser(model, onOpenNote);
 
             TabPane tabPane = new TabPane();
             tabPane.getStyleClass().add("zttl--sidepanel");
@@ -67,8 +69,30 @@ public class AppView extends BorderPane {
                         }
                     });
 
-            model.getOpenNotes().forEach(note -> {
-                tabPane.getTabs().add(new NoteTab(note, onNoteClosed));
+            model.getOpenNotes().addListener((ListChangeListener<Note>) c -> {
+                c.next();
+
+                c.getAddedSubList().forEach(note -> {
+                    NoteTab tab = new NoteTab(note, onNoteClosed);
+                    tabPane.getTabs().add(tab);
+                    tabPane.getSelectionModel().select(tab);
+                });
+
+                c.getRemoved().forEach(note -> {
+                    tabPane.getTabs().stream()
+                            .filter(tab -> tab instanceof NoteTab && ((NoteTab) tab).getNote().equals(note))
+                            .findFirst()
+                            .ifPresent(tab -> tabPane.getTabs().remove(tab));
+                });
+            });
+
+            model.getCurrentNote().addListener((observable, oldValue, newValue) -> {
+                newValue.ifPresent(note -> {
+                    tabPane.getTabs().stream()
+                            .filter(tab -> tab instanceof NoteTab && ((NoteTab) tab).getNote().equals(note))
+                            .findFirst()
+                            .ifPresent(tab -> tabPane.getSelectionModel().select(tab));
+                });
             });
 
             sp.getItems().add(tabPane);
