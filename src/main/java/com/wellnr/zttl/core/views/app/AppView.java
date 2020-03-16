@@ -60,6 +60,7 @@ public class AppView extends BorderPane {
 
         {
             TabPane tabPane = new TabPane();
+            tabPane.getStyleClass().add("zttl--tabs");
             tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.ALL_TABS);
 
             tabPane.getSelectionModel().selectedItemProperty().addListener(

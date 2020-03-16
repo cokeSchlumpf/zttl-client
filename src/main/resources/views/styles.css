@@ -191,8 +191,10 @@
     -fx-text-fill: #959695;
     -fx-padding: 0 10 0 0;
     -fx-focus-color: transparent;
+}
+
+.zttl--tabs .tab-label {
     -fx-pref-width: 150;
-    -fx-max-width: 150;
 }
 
 .tab-pane .tab:selected .tab-label {
@@ -203,6 +205,42 @@
 /*
  * text area/ main editor
  */
+.zttl--note-editor--form {
+    -fx-padding: 5 10 5 10;
+}
+
+.zttl--note-editor--title-label {
+    -fx-text-fill: #cbcccb;
+    -fx-padding: 5 0 0 0;
+}
+
+.zttl--note-editor--title-field {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-family: 'IBM Plex Mono', monospace;
+    -fx-font-size: 16;
+    -fx-font-weight: bolder;
+    -fx-padding: 0 0 5 0;
+
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #ffffff;
+}
+
+.zttl--tag-label--container {
+    -fx-padding: 0 10 0 0;
+}
+
+.zttl--tag-label {
+    -fx-background-color: #0b84ff;
+    -fx-padding: 5;
+    -fx-border-radius: 3;
+    -fx-end-margin: 10;
+}
+
+.zttl--tag-label .label {
+    -fx-text-fill: #ffffff;
+}
+
 .zttl--text-area {
     -fx-text-fill: white;
     -fx-font-family: 'IBM Plex Mono', monospace;
@@ -219,4 +257,16 @@
 .zttl--text-area .content {
     -fx-border-width: 0;
     -fx-background-color: #1d1d1d;
+}
+
+.zttl--v-space {
+    -fx-pref-height: 20;
+    -fx-min-height: 20;
+    -fx-max-width: 20;
+}
+
+.zttl--note-editor--tags {
+    -fx-border-color: #ffffff;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0 0 5 0;
 }
