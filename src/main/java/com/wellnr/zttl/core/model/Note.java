@@ -1,23 +1,27 @@
 package com.wellnr.zttl.core.model;
 
-import lombok.*;
+import lombok.Value;
+import lombok.With;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @With
 @Value
 public class Note {
 
-    private String id;
+    String id;
 
-    private NoteStatus status;
+    NoteStatus status;
 
-    private LocalDate created;
+    LocalDate created;
 
-    private LocalDate updated;
+    LocalDate updated;
 
-    private String title;
+    String title;
 
-    private String content;
+    Set<String> tags;
+
+    String content;
 
 }

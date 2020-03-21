@@ -8,6 +8,7 @@ import com.wellnr.zttl.core.views.app.model.App;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AppController {
@@ -16,32 +17,33 @@ public class AppController {
 
     private final AppView view;
 
-    private final NotesRepository notesRepository;
-
     public AppController(NotesRepository notesRepository) {
         List<Note> inboxNotes = notesRepository
                 .getNotes()
                 .stream()
                 .filter(note -> note.getStatus().equals(NoteStatus.INBOX))
-                .map(note -> new Note(note.getId(), note.getUpdated(), note.getTitle(), note.getContent()))
+                .map(Note::fromNote)
                 .collect(Collectors.toList());
 
         List<Note> archiveNotes = notesRepository
                 .getNotes()
                 .stream()
                 .filter(note -> note.getStatus().equals(NoteStatus.ARCHIVED))
-                .map(note -> new Note(note.getId(), note.getUpdated(), note.getTitle(), note.getContent()))
+                .map(Note::fromNote)
                 .collect(Collectors.toList());
 
         List<Note> openNotes = new ArrayList<>();
 
-        this.notesRepository = notesRepository;
-        this.model = new App(openNotes, inboxNotes, archiveNotes);
+        Set<String> knownTags = notesRepository.getTags();
+
+        this.model = new App(openNotes, inboxNotes, archiveNotes, knownTags);
         this.view = new AppView(
                 model,
+                this::onAddTagToNote,
                 this::onSelectedNoteChanged,
                 this::onNoteClosed,
-                this::onOpenNote);
+                this::onOpenNote,
+                this::onRemoveTagFromNote);
 
         openNotes.forEach(note -> note.getContent().addListener((observable, oldValue, newValue) -> {
             AppController.this.onNoteChanged(note, newValue);
@@ -50,6 +52,10 @@ public class AppController {
 
     public AppView getView() {
         return view;
+    }
+
+    private void onAddTagToNote(Note note, String tag) {
+        note.getTags().add(tag);
     }
 
     private void onNoteChanged(Note note, String newValue) {
@@ -80,8 +86,13 @@ public class AppController {
         }
     }
 
+    private void onRemoveTagFromNote(Note note, String tag) {
+        note.getTags().remove(tag);
+    }
+
     private void onSelectedNoteChanged(Note note) {
         this.model.getCurrentNote().setValue(Optional.of(note));
         this.model.getWordCount().setValue(Optional.of(note.getContent().get().split(" ").length));
     }
+
 }

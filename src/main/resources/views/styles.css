@@ -82,7 +82,10 @@
     -fx-background-color: #252426;
 }
 
+.menu-bar .label,
+.menu-item .label,
 .menu .label {
+    -fx-font-family: 'IBM Plex Sans', sans-serif;
     -fx-text-fill: #ffffff;
 }
 
@@ -226,21 +229,6 @@
     -fx-border-color: #ffffff;
 }
 
-.zttl--tag-label--container {
-    -fx-padding: 0 10 0 0;
-}
-
-.zttl--tag-label {
-    -fx-background-color: #0b84ff;
-    -fx-padding: 5;
-    -fx-border-radius: 3;
-    -fx-end-margin: 10;
-}
-
-.zttl--tag-label .label {
-    -fx-text-fill: #ffffff;
-}
-
 .zttl--text-area {
     -fx-text-fill: white;
     -fx-font-family: 'IBM Plex Mono', monospace;
@@ -265,8 +253,50 @@
     -fx-max-width: 20;
 }
 
-.zttl--note-editor--tags {
+/*
+ * Tags
+ */
+.zttl--tags {
     -fx-border-color: #ffffff;
     -fx-border-width: 0 0 1 0;
     -fx-padding: 0 0 5 0;
+}
+
+.zttl--tag-label--container {
+    -fx-padding: 0 10 5 0;
+}
+
+.zttl--tag-label {
+    -fx-background-color: #0b84ff;
+    -fx-padding: 5 10 5 10;
+}
+
+.zttl--tag-label .label {
+    -fx-font-family: 'IBM Plex Mono', monospace;
+    -fx-text-fill: #ffffff;
+}
+
+.zttl--tag-label .label.zttl--tag-label--close {
+    -fx-text-fill: #ffffffaa;
+}
+
+.zttl--tag-label .label.zttl--tag-label--close:hover {
+    -fx-text-fill: #ffffff;
+}
+
+.zttl--tags--textfield .zttl--autocomplete-text-field--suggestion,
+.zttl--tags--textfield .zttl--autocomplete-text-field--actual {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-family: 'IBM Plex Mono', monospace;
+    -fx-font-size: 14;
+    -fx-padding: 4 0 5 0;
+
+    -fx-border-width: 0 0 0 0;
+    -fx-border-color: #959695;
+    -fx-min-width: 250;
+}
+
+.zttl--tags--textfield .zttl-zttl--autocomplete-text-field--suggestion {
+
 }
