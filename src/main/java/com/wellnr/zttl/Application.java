@@ -13,7 +13,7 @@ public class Application extends javafx.application.Application {
     public void start(Stage primaryStage) {
         try {
             NotesRepository notesRepository = new InMemoryNotesRepository();
-            Scene scene = new Scene(new AppController(notesRepository).getView());
+            Scene scene = new Scene(new AppController(notesRepository, primaryStage).getView());
 
             scene.getStylesheets().addAll(
                     "https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,500,600,700&display=swap",

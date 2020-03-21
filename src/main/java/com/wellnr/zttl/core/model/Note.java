@@ -3,7 +3,7 @@ package com.wellnr.zttl.core.model;
 import lombok.Value;
 import lombok.With;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @With
@@ -14,9 +14,9 @@ public class Note {
 
     NoteStatus status;
 
-    LocalDate created;
+    LocalDateTime created;
 
-    LocalDate updated;
+    LocalDateTime updated;
 
     String title;
 

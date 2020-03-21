@@ -309,3 +309,39 @@
 .zttl--tags--textfield .zttl-zttl--autocomplete-text-field--suggestion {
 
 }
+
+/*
+ * Dialogs
+ */
+.dialog-pane{
+    -fx-background-color: #252426;
+}
+
+.dialog-pane > .button-bar > .container {
+    -fx-background-color: #252426;
+}
+
+.dialog-pane > .content.label {
+    -fx-padding: 2em 0.5em 2em 0.5em;
+    -fx-text-fill: #ffffff;
+}
+
+.dialog-pane:header .header-panel {
+    -fx-background-color: #1c1d1c;
+}
+
+.dialog-pane:header .header-panel .label{
+    -fx-background-color: #1c1d1c;
+    -fx-text-fill: #ffffff;
+}
+
+.dialog-pane .button{
+    -fx-background-color: #1c1d1c;
+    -fx-text-fill: #ffffff;
+    -fx-wrap-text: true;
+}
+
+.dialog-pane .button:hover{
+    -fx-background-color: #333333;
+    -fx-text-fill: #ffffff;
+}

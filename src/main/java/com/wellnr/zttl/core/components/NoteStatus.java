@@ -10,6 +10,7 @@ import org.fxmisc.easybind.EasyBind;
 import org.ocpsoft.prettytime.PrettyTime;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -40,6 +41,7 @@ public class NoteStatus extends BorderPane {
 
       this.updateModified();
       note.getModified().addListener(observable -> this.updateModified());
+      note.getUpdated().addListener(observable -> this.updateModified());
    }
 
    private void updateModified() {
@@ -49,15 +51,16 @@ public class NoteStatus extends BorderPane {
          .ifPresentOrElse(
             modified -> {
                PrettyTime p = new PrettyTime();
-               Date date = Date.from(modified
-                  .atStartOfDay()
+               Date date = Date.from(note
+                  .getUpdated()
+                  .get()
                   .atZone(ZoneId.systemDefault())
                   .toInstant());
 
-               this.modified.setText("Modified " + p.format(date));
+               this.modified.setText("Modified (Last saved " + p.format(date) +")");
             },
             () -> {
-               DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
+               DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
                this.modified.setText(note.getUpdated().get().format(formatter));
             }
          );

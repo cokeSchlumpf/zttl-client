@@ -1,6 +1,7 @@
 package com.wellnr.zttl.core.components;
 
 import javafx.beans.Observable;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
@@ -12,17 +13,16 @@ import java.util.Optional;
 
 public class StatusBar extends BorderPane {
 
-    public StatusBar(ObjectProperty<Optional<Integer>> right) {
+    public StatusBar(IntegerProperty notesCount, ObjectProperty<Optional<Integer>> wordCount) {
         super();
 
         Label left = new Label("Left text");
         left.getStyleClass().add("zttl--label");
-        Label middle = new Label("Middle text");
-        middle.getStyleClass().add("zttl--label");
+        left.textProperty().bind(EasyBind.map(notesCount, n -> n + " Notes"));
 
         Label rightLabel = new Label("Right text");
         rightLabel.getStyleClass().add("zttl--label");
-        rightLabel.textProperty().bind(EasyBind.map(right, opt -> opt.map(i -> i + " word(s)").orElse("")));
+        rightLabel.textProperty().bind(EasyBind.map(wordCount, opt -> opt.map(i -> i + " word(s)").orElse("")));
 
         this.setPadding(new Insets(5, 10, 5, 10));
         this.setPrefHeight(20);
@@ -30,7 +30,6 @@ public class StatusBar extends BorderPane {
         this.getStyleClass().add("zttl--statusbar");
         this.setLeft(left);
         this.setRight(rightLabel);
-        this.setCenter(middle);
     }
 
 }

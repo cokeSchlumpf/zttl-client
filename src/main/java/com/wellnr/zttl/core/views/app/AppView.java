@@ -1,15 +1,20 @@
 package com.wellnr.zttl.core.views.app;
 
+import com.wellnr.zttl.core.components.AppMenu;
 import com.wellnr.zttl.core.components.NoteBrowser;
 import com.wellnr.zttl.core.components.NoteTab;
 import com.wellnr.zttl.core.components.StatusBar;
 import com.wellnr.zttl.core.views.app.model.App;
 import com.wellnr.zttl.core.views.app.model.Note;
 import javafx.collections.ListChangeListener;
-import javafx.scene.control.*;
+import javafx.event.Event;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -18,10 +23,20 @@ public class AppView extends BorderPane {
    public AppView(
       final App model,
       final BiConsumer<Note, String> onAddTagToNote,
-      final Consumer<Note> onNoteChanged,
+      final Consumer<Optional<Note>> onNoteChanged,
+      final BiConsumer<Note, Event> onNoteCloseRequest,
       final Consumer<Note> onNoteClosed,
       final Consumer<Note> onOpenNote,
-      final BiConsumer<Note, String> onRemoveTagFromNote) {
+      final BiConsumer<Note, String> onRemoveTagFromNote,
+      final Runnable onAbout,
+      final Runnable onClose,
+      final Runnable onCloseAll,
+      final Runnable onMoveToArchive,
+      final Runnable onMoveToInbox,
+      final Runnable onNew,
+      final Runnable onSave,
+      final Runnable onSaveAll,
+      final Runnable onQuit) {
 
       super();
 
@@ -29,17 +44,11 @@ public class AppView extends BorderPane {
       this.setCenter(sp);
 
       {
-         MenuItem setWorkingDir = new MenuItem("Set Working Directory ...");
-         MenuItem about = new MenuItem("About");
-
-         Menu mainMenu = new Menu("zttl");
-         mainMenu.getItems().addAll(setWorkingDir, about);
-
-         MenuBar menu = new MenuBar(mainMenu);
-         menu.getStyleClass().add("zttl--menu");
-
-         String os = System.getProperty("os.name");
-         if (os != null && os.startsWith("Mac")) menu.useSystemMenuBarProperty().set(true);
+         AppMenu menu = new AppMenu(
+            model, onAbout, onClose, onCloseAll,
+            onMoveToArchive, onMoveToInbox, onNew,
+            onSave, onSaveAll,
+            () -> {}, onQuit);
 
          this.setTop(menu);
       }
@@ -66,7 +75,9 @@ public class AppView extends BorderPane {
          tabPane.getSelectionModel().selectedItemProperty().addListener(
             (observable, oldValue, newValue) -> {
                if (newValue instanceof NoteTab) {
-                  onNoteChanged.accept(((NoteTab) newValue).getNote());
+                  onNoteChanged.accept(Optional.of(((NoteTab) newValue).getNote()));
+               } else {
+                  onNoteChanged.accept(Optional.empty());
                }
             });
 
@@ -74,7 +85,10 @@ public class AppView extends BorderPane {
             c.next();
 
             c.getAddedSubList().forEach(note -> {
-               NoteTab tab = new NoteTab(note, model.getKnownTags(), onNoteClosed, onAddTagToNote, onRemoveTagFromNote);
+               NoteTab tab = new NoteTab(
+                  note, model.getKnownTags(), onNoteClosed, onNoteCloseRequest,
+                  onAddTagToNote, onRemoveTagFromNote);
+
                tabPane.getTabs().add(tab);
                tabPane.getSelectionModel().select(tab);
             });
@@ -100,7 +114,7 @@ public class AppView extends BorderPane {
       }
 
       {
-         StatusBar s = new StatusBar(model.getWordCount());
+         StatusBar s = new StatusBar(model.getNoteCount(), model.getWordCount());
          this.setBottom(s);
       }
 

@@ -15,12 +15,19 @@ public class NoteItem extends VBox {
     private final Note note;
 
     public NoteItem(Note note, Consumer<Note> onOpen) {
-        Label title = new Label(note.getTitle().get());
+        Label title = new Label();
+        title.textProperty().bind(note.getTitle());
         title.getStyleClass().add("zttl--note-title");
 
         String date = note.getUpdated().get().format(DateTimeFormatter.ISO_LOCAL_DATE);
         Label content = new Label(date + ": " + note.getContent().get().split("\n")[0]);
         content.getStyleClass().addAll("zttl--note-content");
+
+        note.getUpdated().addListener(observable -> {
+            var d = note.getUpdated().get().format(DateTimeFormatter.ISO_LOCAL_DATE);
+            var s = d + ": " + note.getContent().get().split("\n")[0];
+            content.setText(s);
+        });
 
         this.getChildren().addAll(title, content);
         this.getStyleClass().add("zttl--note-item");

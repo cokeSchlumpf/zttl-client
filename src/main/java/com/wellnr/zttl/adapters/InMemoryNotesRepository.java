@@ -25,7 +25,15 @@ public class InMemoryNotesRepository implements NotesRepository {
         NoteStatus status = NoteStatus.valueOf(NoteStatus.values()[rand.nextInt(2)].name());
         Set<String> tags = new HashSet<>(Arrays.asList(LoremIpsum.getInstance().getWords(1, 5).split(" ")));
 
-        return new Note(id, status, LocalDate.now(), LocalDate.now(), title, tags, content);
+        return new Note(id, status, LocalDate.now().atStartOfDay(), LocalDate.now().atStartOfDay(), title, tags, content);
+    }
+
+    @Override
+    public Optional<Note> getNoteById(String id) {
+        return notes
+           .stream()
+           .filter(n -> n.getId().equals(id))
+           .findFirst();
     }
 
     @Override
@@ -44,7 +52,7 @@ public class InMemoryNotesRepository implements NotesRepository {
 
     @Override
     public void saveNote(Note note) {
-
+        System.out.println("Saving " + note.getId());
     }
 
 }
