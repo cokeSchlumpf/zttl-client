@@ -253,6 +253,15 @@
     -fx-max-width: 20;
 }
 
+.zttl--note-status {
+    -fx-border-color: #ffffff;
+    -fx-border-width: 1 0 0 0;
+}
+
+.zttl--note-status .zttl--label {
+    -fx-text-fill: #cbcccb;
+}
+
 /*
  * Tags
  */

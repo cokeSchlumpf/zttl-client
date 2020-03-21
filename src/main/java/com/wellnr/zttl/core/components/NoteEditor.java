@@ -54,8 +54,11 @@ public class NoteEditor extends BorderPane {
         ta.setText(note.getContent().get());
         ta.textProperty().bindBidirectional(note.getContent());
 
+        NoteStatus status = new NoteStatus(note);
+
         this.setTop(form);
         this.setCenter(ta);
+        this.setBottom(status);
     }
 
 }

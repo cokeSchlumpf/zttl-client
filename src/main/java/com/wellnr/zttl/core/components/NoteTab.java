@@ -1,10 +1,8 @@
 package com.wellnr.zttl.core.components;
 
 import com.wellnr.zttl.core.views.app.model.Note;
-import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TextArea;
 
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
