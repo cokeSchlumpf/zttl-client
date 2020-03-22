@@ -1,9 +1,7 @@
 package com.wellnr.zttl.core.views.app;
 
-import com.wellnr.zttl.core.components.AppMenu;
-import com.wellnr.zttl.core.components.NoteBrowser;
-import com.wellnr.zttl.core.components.NoteTab;
-import com.wellnr.zttl.core.components.StatusBar;
+import com.wellnr.zttl.core.components.*;
+import com.wellnr.zttl.core.model.Settings;
 import com.wellnr.zttl.core.views.app.model.App;
 import com.wellnr.zttl.core.views.app.model.Note;
 import javafx.collections.ListChangeListener;
@@ -13,6 +11,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -20,8 +19,17 @@ import java.util.function.Consumer;
 
 public class AppView extends BorderPane {
 
+   private final TabPane tabPane;
+
+   private final App model;
+
+   private final Stage primaryStage;
+
+   private final Consumer<Settings> onSaveSettings;
+
    public AppView(
       final App model,
+      final Stage primaryStage,
       final BiConsumer<Note, String> onAddTagToNote,
       final Consumer<Optional<Note>> onNoteChanged,
       final BiConsumer<Note, Event> onNoteCloseRequest,
@@ -36,9 +44,14 @@ public class AppView extends BorderPane {
       final Runnable onNew,
       final Runnable onSave,
       final Runnable onSaveAll,
+      final Runnable onSettings,
+      final Consumer<Settings> onSaveSettings,
       final Runnable onQuit) {
 
       super();
+      this.model = model;
+      this.primaryStage = primaryStage;
+      this.onSaveSettings = onSaveSettings;
 
       SplitPane sp = new SplitPane();
       this.setCenter(sp);
@@ -48,7 +61,7 @@ public class AppView extends BorderPane {
             model, onAbout, onClose, onCloseAll,
             onMoveToArchive, onMoveToInbox, onNew,
             onSave, onSaveAll,
-            () -> {}, onQuit);
+            onSettings, onQuit);
 
          this.setTop(menu);
       }
@@ -68,11 +81,11 @@ public class AppView extends BorderPane {
       }
 
       {
-         TabPane tabPane = new TabPane();
-         tabPane.getStyleClass().add("zttl--tabs");
-         tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.ALL_TABS);
+         this.tabPane = new TabPane();
+         this.tabPane.getStyleClass().add("zttl--tabs");
+         this.tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.ALL_TABS);
 
-         tabPane.getSelectionModel().selectedItemProperty().addListener(
+         this.tabPane.getSelectionModel().selectedItemProperty().addListener(
             (observable, oldValue, newValue) -> {
                if (newValue instanceof NoteTab) {
                   onNoteChanged.accept(Optional.of(((NoteTab) newValue).getNote()));
@@ -89,8 +102,8 @@ public class AppView extends BorderPane {
                   note, model.getKnownTags(), onNoteClosed, onNoteCloseRequest,
                   onAddTagToNote, onRemoveTagFromNote);
 
-               tabPane.getTabs().add(tab);
-               tabPane.getSelectionModel().select(tab);
+               this.tabPane.getTabs().add(tab);
+               this.tabPane.getSelectionModel().select(tab);
             });
 
             c.getRemoved().forEach(note -> tabPane
@@ -128,4 +141,28 @@ public class AppView extends BorderPane {
       this.setPrefWidth(800);
       this.setPrefHeight(600);
    }
+
+   public void showSettings() {
+      tabPane
+         .getTabs()
+         .stream()
+         .filter(tab -> tab instanceof SettingsTab)
+         .findFirst()
+         .ifPresentOrElse(
+            tabPane.getSelectionModel()::select,
+            () -> {
+               var tab = new SettingsTab(model.getSettings(), primaryStage, onSaveSettings, this::hideSettings);
+               tabPane.getTabs().add(tab);
+               tabPane.getSelectionModel().select(tab);
+            });
+   }
+
+   public void hideSettings() {
+      tabPane
+         .getTabs()
+         .stream()
+         .filter(tab -> tab instanceof SettingsTab)
+         .forEach(tabPane.getTabs()::remove);
+   }
+
 }

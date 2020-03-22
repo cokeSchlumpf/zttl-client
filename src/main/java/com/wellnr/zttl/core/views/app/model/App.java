@@ -1,5 +1,6 @@
 package com.wellnr.zttl.core.views.app.model;
 
+import com.wellnr.zttl.core.model.Settings;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -31,11 +32,14 @@ public class App {
 
    private final IntegerProperty noteCount;
 
+   private final ObjectProperty<Settings> settings;
+
    public App(
       List<Note> openNotes,
       List<Note> inboxNotes,
       List<Note> archivedNotes,
-      Set<String> knownTags) {
+      Set<String> knownTags,
+      Settings settings) {
 
       this.openNotes = FXCollections.observableList(openNotes);
       this.inboxNotes = FXCollections.observableList(inboxNotes);
@@ -46,12 +50,14 @@ public class App {
       this.knownTags = FXCollections.observableSet(knownTags);
 
       this.noteCount = new SimpleIntegerProperty(inboxNotes.size() + archivedNotes.size());
+      this.settings = new SimpleObjectProperty<>(settings);
 
       this.archivedNotes.addListener(
          (InvalidationListener) observable -> this.noteCount.set(inboxNotes.size() + archivedNotes.size()));
 
       this.inboxNotes.addListener(
          (InvalidationListener) observable -> this.noteCount.set(inboxNotes.size() + archivedNotes.size()));
+
    }
 
 }

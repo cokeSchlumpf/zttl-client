@@ -192,6 +192,7 @@
 
 .tab-pane .tab-label {
     -fx-text-fill: #959695;
+    -fx-text-alignment: LEFT;
     -fx-padding: 0 10 0 0;
     -fx-focus-color: transparent;
 }
@@ -245,6 +246,10 @@
 .zttl--text-area .content {
     -fx-border-width: 0;
     -fx-background-color: #1d1d1d;
+}
+
+.zttl--text-area--error {
+    -fx-text-fill: #dd2b3d;
 }
 
 .zttl--v-space {

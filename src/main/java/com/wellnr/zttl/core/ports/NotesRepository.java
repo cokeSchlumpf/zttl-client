@@ -8,12 +8,14 @@ import java.util.Set;
 
 public interface NotesRepository {
 
+    Note createNewNote();
+
     Optional<Note> getNoteById(String id);
 
     List<Note> getNotes();
 
     Set<String> getTags();
 
-    void saveNote(Note note);
+    Note saveNote(Note note);
 
 }

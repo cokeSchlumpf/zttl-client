@@ -3,9 +3,12 @@ package com.wellnr.zttl.core.views.app;
 import com.wellnr.zttl.core.components.SaveAllNotesMessageBox;
 import com.wellnr.zttl.core.components.SaveNoteMessageBox;
 import com.wellnr.zttl.core.model.NoteStatus;
+import com.wellnr.zttl.core.model.Settings;
 import com.wellnr.zttl.core.ports.NotesRepository;
+import com.wellnr.zttl.core.ports.SettingsRepository;
 import com.wellnr.zttl.core.views.app.model.App;
 import com.wellnr.zttl.core.views.app.model.Note;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.event.Event;
 import javafx.stage.Stage;
@@ -21,15 +24,22 @@ public class AppController {
 
    private final NotesRepository notesRepository;
 
+   private final SettingsRepository settingsRepository;
+
    private final App model;
 
    private final AppView view;
 
    private final Stage primaryStage;
 
-   public AppController(NotesRepository notesRepository, Stage primaryStage) {
+   public AppController(
+      NotesRepository notesRepository,
+      SettingsRepository settingsRepository,
+      Stage primaryStage) {
+
       this.notesRepository = notesRepository;
       this.primaryStage = primaryStage;
+      this.settingsRepository = settingsRepository;
 
       List<Note> inboxNotes = notesRepository
          .getNotes()
@@ -52,27 +62,20 @@ public class AppController {
          List<Note> allNotes = new ArrayList<>();
          allNotes.addAll(inboxNotes);
          allNotes.addAll(archiveNotes);
-         allNotes.forEach(note -> {
-            note.getStatus().addListener((observable, oldValue, newValue) ->
-               this.onNoteStatusChanged(note, oldValue, newValue));
-
-            note.getTitle().addListener(observable -> this.onNoteChanged(note));
-            note.getTags().addListener((InvalidationListener) observable -> this.onNoteChanged(note));
-            note.getContent().addListener(observable -> this.onNoteChanged(note));
-         });
+         allNotes.forEach(this::initNote);
       }
 
-      this.model = new App(openNotes, inboxNotes, archiveNotes, knownTags);
+      this.model = new App(openNotes, inboxNotes, archiveNotes, knownTags, settingsRepository.getSettings());
       this.view = new AppView(
          model,
+         primaryStage,
          this::onAddTagToNote,
          this::onSelectedNoteChanged,
          this::onNoteCloseRequest,
          this::onNoteClosed,
          this::onOpenNote,
          this::onRemoveTagFromNote,
-         () -> {
-         },
+         this::onAbout,
          this::onClose,
          this::onCloseAll,
          this::onMoveToArchive,
@@ -80,12 +83,26 @@ public class AppController {
          this::onNew,
          this::onSave,
          this::onSaveAll,
-         () -> {
-         });
+         this::onSettings,
+         this::onSaveSettings,
+         this::onQuit);
    }
 
    public AppView getView() {
       return view;
+   }
+
+   private void initNote(Note note) {
+      note.getStatus().addListener((observable, oldValue, newValue) ->
+         this.onNoteStatusChanged(note, oldValue, newValue));
+
+      note.getTitle().addListener(observable -> this.onNoteChanged(note));
+      note.getTags().addListener((InvalidationListener) observable -> this.onNoteChanged(note));
+      note.getContent().addListener(observable -> this.onNoteChanged(note));
+   }
+
+   private void onAbout() {
+
    }
 
    private void onAddTagToNote(Note note, String tag) {
@@ -143,7 +160,30 @@ public class AppController {
    }
 
    private void onNew() {
+      Note note = Note.fromNote(notesRepository.createNewNote());
+      initNote(note);
 
+      switch (note.getStatus().get()) {
+         case INBOX:
+            this.model.getInboxNotes().add(note);
+            break;
+         case ARCHIVED:
+            this.model.getArchivedNotes().add(note);
+            break;
+      }
+
+      onOpenNote(note);
+   }
+
+   private void onNoteChanged(Note note) {
+      model.getCurrentNote().get().ifPresent(current -> {
+         if (current == note) {
+            var count = note.getContent().get().split(" ").length;
+            model.getWordCount().setValue(Optional.of(count));
+         }
+      });
+
+      note.getModified().setValue(Optional.of(LocalDateTime.now()));
    }
 
    private void onNoteCloseRequest(Note note, Event event) {
@@ -170,14 +210,6 @@ public class AppController {
       });
    }
 
-   private void onOpenNote(Note note) {
-      if (!model.getOpenNotes().contains(note)) {
-         model.getOpenNotes().add(note);
-      } else {
-         model.getCurrentNote().setValue(Optional.of(note));
-      }
-   }
-
    private void onNoteStatusChanged(Note note, NoteStatus oldValue, NoteStatus newValue) {
       switch (oldValue) {
          case INBOX:
@@ -185,6 +217,7 @@ public class AppController {
             break;
          case ARCHIVED:
             this.model.getArchivedNotes().remove(note);
+            break;
       }
 
       switch (newValue) {
@@ -193,9 +226,18 @@ public class AppController {
             break;
          case ARCHIVED:
             this.model.getArchivedNotes().add(note);
+            break;
       }
 
       note.getModified().setValue(Optional.of(LocalDateTime.now()));
+   }
+
+   private void onOpenNote(Note note) {
+      if (!model.getOpenNotes().contains(note)) {
+         model.getOpenNotes().add(note);
+      } else {
+         model.getCurrentNote().setValue(Optional.of(note));
+      }
    }
 
    private void onRemoveTagFromNote(Note note, String tag) {
@@ -213,9 +255,13 @@ public class AppController {
    }
 
    private void onSave(Note note) {
+      if (note.getStatus().get().equals(NoteStatus.NEW)) {
+         note.getStatus().setValue(NoteStatus.INBOX);
+      }
+
       note.getModified().setValue(Optional.empty());
       note.getUpdated().setValue(LocalDateTime.now());
-      notesRepository.saveNote(note.toNote());
+      note.updateFromNote(notesRepository.saveNote(note.toNote()));
    }
 
    private void onSaveAll() {
@@ -227,15 +273,39 @@ public class AppController {
       this.model.getWordCount().setValue(note.map(n -> n.getContent().get().split(" ").length));
    }
 
-   private void onNoteChanged(Note note) {
-      model.getCurrentNote().get().ifPresent(current -> {
-         if (current == note) {
-            var count = note.getContent().get().split(" ").length;
-            model.getWordCount().setValue(Optional.of(count));
-         }
-      });
+   private void onSaveSettings(Settings settings) {
+      this.settingsRepository.saveSettings(settings);
+      this.model.getSettings().setValue(settings);
+   }
 
-      note.getModified().setValue(Optional.of(LocalDateTime.now()));
+   private void onSettings() {
+      this.view.showSettings();
+   }
+
+   private void onQuit() {
+      List<Note> unsaved = model
+         .getOpenNotes()
+         .stream()
+         .filter(n -> n.getModified().get().isPresent())
+         .collect(Collectors.toList());
+
+      if (unsaved.isEmpty()) {
+         model.getOpenNotes().clear();
+      } else {
+         var alert = new SaveAllNotesMessageBox(primaryStage, unsaved);
+
+         alert.run(
+            () -> {
+               unsaved.forEach(this::onSave);
+               Platform.exit();
+               System.exit(0);
+            },
+            () -> {
+               unsaved.forEach(this::onRevertNote);
+               Platform.exit();
+               System.exit(0);
+            });
+      }
    }
 
 }

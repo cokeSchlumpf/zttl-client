@@ -1,7 +1,10 @@
 package com.wellnr.zttl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wellnr.zttl.adapters.InMemoryNotesRepository;
+import com.wellnr.zttl.adapters.InMemorySettingsRepository;
 import com.wellnr.zttl.core.ports.NotesRepository;
+import com.wellnr.zttl.core.ports.SettingsRepository;
 import com.wellnr.zttl.core.views.app.AppController;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -13,7 +16,8 @@ public class Application extends javafx.application.Application {
     public void start(Stage primaryStage) {
         try {
             NotesRepository notesRepository = new InMemoryNotesRepository();
-            Scene scene = new Scene(new AppController(notesRepository, primaryStage).getView());
+            SettingsRepository settingsRepository = new InMemorySettingsRepository();
+            Scene scene = new Scene(new AppController(notesRepository, settingsRepository, primaryStage).getView());
 
             scene.getStylesheets().addAll(
                     "https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,500,600,700&display=swap",
