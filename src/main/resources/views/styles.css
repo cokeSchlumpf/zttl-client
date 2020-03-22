@@ -132,6 +132,15 @@
     -fx-border-width: 0;
 }
 
+.zttl--note-browser--filter {
+    -fx-background-color: #363836;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 5 10 5 10;
+
+    -fx-border-width: 0;
+    -fx-border-color: #959695;
+}
+
 .zttl--note-item {
     -fx-background-color: #252426;
     -fx-padding: 5 10 5 10;
