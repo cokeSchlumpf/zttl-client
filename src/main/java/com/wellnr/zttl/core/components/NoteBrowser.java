@@ -23,7 +23,7 @@ public class NoteBrowser extends AnchorPane {
    private final StringProperty filter;
 
    public NoteBrowser(App model, Consumer<Note> onOpen) {
-      this.filter = new SimpleStringProperty();
+      this.filter = new SimpleStringProperty("");
 
       SplitPane sp = new SplitPane();
       sp.getStyleClass().add("zttl--note-browser--split-pane");

@@ -7,7 +7,7 @@ import java.nio.file.Path;
 
 public class InMemorySettingsRepository implements SettingsRepository {
 
-   private Settings settings = Settings.apply(Path.of("/Users/michael/Workspaces/zettelkastens"));
+   private Settings settings = Settings.apply(Path.of("/Users/michael/Workspaces/zettelkastens-data"));
 
    @Override
    public Settings getSettings() {

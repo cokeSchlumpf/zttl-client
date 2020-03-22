@@ -86,6 +86,11 @@ public class AppController {
          this::onSettings,
          this::onSaveSettings,
          this::onQuit);
+
+      primaryStage.setOnCloseRequest(event -> {
+         event.consume();
+         this.onQuit();
+      });
    }
 
    public AppView getView() {
@@ -290,7 +295,8 @@ public class AppController {
          .collect(Collectors.toList());
 
       if (unsaved.isEmpty()) {
-         model.getOpenNotes().clear();
+         Platform.exit();
+         System.exit(0);
       } else {
          var alert = new SaveAllNotesMessageBox(primaryStage, unsaved);
 
