@@ -24,6 +24,7 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.3'
     compile group: 'com.thedeanda', name: 'lorem', version: '2.1'
     compile group: 'org.fxmisc.easybind', name: 'easybind', version: '1.0.3'
+    compile group: 'org.fxmisc.richtext', name: 'richtextfx', version: '0.10.4'
     compile group: 'org.ocpsoft.prettytime', name: 'prettytime', version: '4.0.4.Final'
     compile group: 'org.openjfx', name: 'javafx-fxml', version: '14'
 

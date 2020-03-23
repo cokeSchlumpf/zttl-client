@@ -1,9 +1,6 @@
 package com.wellnr.zttl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wellnr.zttl.adapters.FilesystemNotesRepository;
-import com.wellnr.zttl.adapters.InMemoryNotesRepository;
-import com.wellnr.zttl.adapters.InMemorySettingsRepository;
 import com.wellnr.zttl.adapters.UserHomeDirSettingsRepository;
 import com.wellnr.zttl.core.ports.NotesRepository;
 import com.wellnr.zttl.core.ports.SettingsRepository;
@@ -27,9 +24,10 @@ public class Application extends javafx.application.Application {
                     "https://fonts.googleapis.com/css?family=IBM+Plex+Mono:300,400,500,600,700&display=swap",
                     "views/styles.css");
 
-            primaryStage.setScene(scene);
-            primaryStage.initStyle(StageStyle.DECORATED);
+            // primaryStage.initStyle(StageStyle.DECORATED);
+            primaryStage.setFullScreen(true);
             primaryStage.setTitle("Zttl Notes");
+            primaryStage.setScene(scene);
             primaryStage.show();
         } catch (Exception e) {
             throw new RuntimeException(e);

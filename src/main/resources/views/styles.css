@@ -261,6 +261,65 @@
     -fx-text-fill: #dd2b3d;
 }
 
+/*
+ * Editor
+ */
+.zttl--markdown-editor {
+    -fx-padding: 0 10 0 10;
+}
+
+.zttl--markdown-editor--text-area {
+    -fx-font-family: 'IBM Plex Sans', sans-serif;
+    -fx-font-size: 16;
+    -fx-background-color: #1d1d1d;
+}
+
+.zttl--markdown-editor--text-area .paragraph-text {
+    -foo-fx-padding: 0 0 0 10;
+}
+
+.zttl--markdown-editor--text-area .text {
+    -fx-fill: #ffffff;
+}
+
+.zttl--markdown-editor--text-area .lineno {
+    -fx-background-color: #1d1d1d;
+    -fx-pref-width: 40;
+}
+
+.zttl--markdown-editor--text-area .lineno .text {
+    -fx-font-style: normal;
+    -fx-font-family: 'IBM Plex Sans', sans-serif;
+    -fx-font-size: 16;
+    -fx-fill: #959695;
+}
+
+.zttl--markdown-editor--text-area .caret {
+    -fx-stroke: #ffffff;
+}
+
+.zttl--markdown-editor--text-area .zttl--markdown-editor--headline {
+    -fx-fill: #3c9cdb;
+    -fx-font-weight: bolder;
+}
+
+.zttl--markdown-editor--text-area .zttl--markdown-editor--list-item {
+    -fx-fill: #3c9cdb;
+}
+
+.zttl--markdown-editor--text-area .zttl--markdown-editor--alt {
+    -fx-fill: #d88e73;
+}
+
+.zttl--markdown-editor--text-area .zttl--markdown-editor--link {
+    -fx-underline: true;
+}
+
+.zttl--markdown-editor--text-area .zttl--markdown-editor--code {
+    -fx-fill: #618853;
+}
+
+
 .zttl--v-space {
     -fx-pref-height: 20;
     -fx-min-height: 20;

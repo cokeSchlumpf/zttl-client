@@ -1,7 +1,6 @@
 package com.wellnr.zttl.core.components;
 
 import com.wellnr.zttl.core.views.app.model.Note;
-import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -54,10 +53,14 @@ public class NoteEditor extends BorderPane {
         ta.setText(note.getContent().get());
         ta.textProperty().bindBidirectional(note.getContent());
 
+        MarkdownEditor editor = new MarkdownEditor();
+        editor.setText(note.getContent().get());
+        editor.textProperty.bindBidirectional(note.getContent());
+
         NoteStatus status = new NoteStatus(note);
 
         this.setTop(form);
-        this.setCenter(ta);
+        this.setCenter(editor);
         this.setBottom(status);
     }
 
