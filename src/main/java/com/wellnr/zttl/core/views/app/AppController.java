@@ -4,6 +4,7 @@ import com.wellnr.zttl.core.components.SaveAllNotesMessageBox;
 import com.wellnr.zttl.core.components.SaveNoteMessageBox;
 import com.wellnr.zttl.core.model.NoteStatus;
 import com.wellnr.zttl.core.model.Settings;
+import com.wellnr.zttl.core.model.State;
 import com.wellnr.zttl.core.ports.NotesRepository;
 import com.wellnr.zttl.core.ports.SettingsRepository;
 import com.wellnr.zttl.core.views.app.model.App;
@@ -32,6 +33,8 @@ public class AppController {
 
    private final Stage primaryStage;
 
+   private final State state;
+
    public AppController(
       NotesRepository notesRepository,
       SettingsRepository settingsRepository,
@@ -40,30 +43,28 @@ public class AppController {
       this.notesRepository = notesRepository;
       this.primaryStage = primaryStage;
       this.settingsRepository = settingsRepository;
+      this.state = settingsRepository.getState();
 
-      List<Note> inboxNotes = notesRepository
+      List<Note> allNotes = notesRepository
          .getNotes()
          .stream()
-         .filter(note -> note.getStatus().equals(NoteStatus.INBOX))
          .map(Note::fromNote)
          .collect(Collectors.toList());
 
-      List<Note> archiveNotes = notesRepository
-         .getNotes()
+      allNotes.forEach(this::initNote);
+
+      List<Note> inboxNotes = allNotes
          .stream()
-         .filter(note -> note.getStatus().equals(NoteStatus.ARCHIVED))
-         .map(Note::fromNote)
+         .filter(note -> note.getStatus().get().equals(NoteStatus.INBOX))
+         .collect(Collectors.toList());
+
+      List<Note> archiveNotes = allNotes
+         .stream()
+         .filter(note -> note.getStatus().get().equals(NoteStatus.ARCHIVED))
          .collect(Collectors.toList());
 
       List<Note> openNotes = new ArrayList<>();
       Set<String> knownTags = notesRepository.getTags();
-
-      {
-         List<Note> allNotes = new ArrayList<>();
-         allNotes.addAll(inboxNotes);
-         allNotes.addAll(archiveNotes);
-         allNotes.forEach(this::initNote);
-      }
 
       this.model = new App(openNotes, inboxNotes, archiveNotes, knownTags, settingsRepository.getSettings());
       this.view = new AppView(
@@ -91,6 +92,20 @@ public class AppController {
          event.consume();
          this.onQuit();
       });
+
+      {
+         state
+            .getOpenNotes()
+            .stream()
+            .map(id -> allNotes.stream().filter(n -> n.getId().get().equals(id)).findFirst())
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .forEach(this::onOpenNote);
+
+         onSelectedNoteChanged(state
+            .getSelectedNote()
+            .flatMap(id -> allNotes.stream().filter(n -> n.getId().get().equals(id)).findFirst()));
+      }
    }
 
    public AppView getView() {
@@ -295,6 +310,7 @@ public class AppController {
          .collect(Collectors.toList());
 
       if (unsaved.isEmpty()) {
+         saveState();
          Platform.exit();
          System.exit(0);
       } else {
@@ -303,15 +319,25 @@ public class AppController {
          alert.run(
             () -> {
                unsaved.forEach(this::onSave);
+               saveState();
                Platform.exit();
                System.exit(0);
             },
             () -> {
                unsaved.forEach(this::onRevertNote);
+               saveState();
                Platform.exit();
                System.exit(0);
             });
       }
+   }
+
+   private void saveState() {
+      State newState = this.state
+         .withOpenNotes(model.getOpenNotes().stream().map(n -> n.getId().get()).collect(Collectors.toList()))
+         .withSelectedNote(model.getCurrentNote().get().map(n -> n.getId().get()).orElse(null));
+
+      settingsRepository.saveState(newState);
    }
 
 }

@@ -54,7 +54,6 @@ public class SearchReplaceBox extends HBox {
    private ScheduledTask emitSearch;
 
    public SearchReplaceBox() {
-
       this.currentMatchProperty = new SimpleIntegerProperty(0);
       this.replaceVisibleProperty = new SimpleBooleanProperty(false);
       this.matchCaseProperty = new SimpleBooleanProperty(false);
