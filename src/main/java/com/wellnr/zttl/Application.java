@@ -6,6 +6,8 @@ import com.wellnr.zttl.core.ports.NotesRepository;
 import com.wellnr.zttl.core.ports.SettingsRepository;
 import com.wellnr.zttl.core.views.app.AppController;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -25,6 +27,7 @@ public class Application extends javafx.application.Application {
                     "views/styles.css");
 
             // primaryStage.initStyle(StageStyle.DECORATED);
+            primaryStage.setFullScreenExitKeyCombination(new KeyCodeCombination(KeyCode.F11));
             primaryStage.setFullScreen(true);
             primaryStage.setTitle("Zttl Notes");
             primaryStage.setScene(scene);

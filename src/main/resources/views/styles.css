@@ -219,7 +219,7 @@
  * text area/ main editor
  */
 .zttl--note-editor--form {
-    -fx-padding: 5 10 5 10;
+    -fx-padding: 10 10 20 10;
 }
 
 .zttl--note-editor--title-label {
@@ -319,6 +319,9 @@
     -fx-fill: #618853;
 }
 
+.zttl--markdown-editor--text-area  .zttl--markdown-editor--search-highlight {
+    -rtfx-background-color: #672f09;
+}
 
 .zttl--v-space {
     -fx-pref-height: 20;
@@ -417,4 +420,54 @@
 .dialog-pane .button:hover{
     -fx-background-color: #333333;
     -fx-text-fill: #ffffff;
+}
+
+/*
+ * Search Replace
+ */
+.zttl--search-replace {
+    -fx-background-color: #373837;
+    -fx-padding: 5 10 5 10;
+}
+
+.zttl--search-replace--textfield {
+    -fx-background-color: #363836;
+    -fx-border-radius: 0;
+    -fx-border-width: 1;
+    -fx-border-color: #959695;
+
+    -fx-text-fill: #ffffff;
+    -fx-pref-width: 300;
+    -fx-padding: 3 5 3 5;
+
+    -fx-font-size: 12;
+    -fx-font-family: 'IBM Plex Mono', monospace;
+}
+
+.zttl--search-replace--label {
+    -fx-text-fill: #fff;
+    -fx-padding: 3 5 3 5;
+}
+
+.zttl--search-replace--buttons {
+    -fx-padding: 0 0 0 5;
+}
+
+.zttl--search-replace--button {
+    -fx-background-color: transparent;
+    -fx-border-color: #959695;
+    -fx-text-fill: #ffffff;
+    -fx-border-radius: 5;
+    -fx-padding: 2 5;
+}
+
+.zttl--search-replace--button:hover {
+    -fx-background-color: #252326;
+}
+.zttl--search-replace--button.active {
+    -fx-background-color: #0b84ff;
+}
+
+.zttl--search-replace--button:focused {
+    -fx-border-color: #0b84ff;
 }
