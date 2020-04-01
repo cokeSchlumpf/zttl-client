@@ -4,11 +4,17 @@ import com.wellnr.zttl.core.components.*;
 import com.wellnr.zttl.core.model.Settings;
 import com.wellnr.zttl.core.views.app.model.App;
 import com.wellnr.zttl.core.views.app.model.Note;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -26,6 +32,8 @@ public class AppView extends BorderPane {
    private final Stage primaryStage;
 
    private final Consumer<Settings> onSaveSettings;
+
+   public final DoubleProperty layoutDividerPosition;
 
    public AppView(
       final App model,
@@ -52,6 +60,7 @@ public class AppView extends BorderPane {
       this.model = model;
       this.primaryStage = primaryStage;
       this.onSaveSettings = onSaveSettings;
+      this.layoutDividerPosition = new SimpleDoubleProperty();
 
       SplitPane sp = new SplitPane();
       this.setCenter(sp);
@@ -132,9 +141,8 @@ public class AppView extends BorderPane {
       }
 
       {
-         sp.setDividerPositions(0.3);
          sp.getStyleClass().add("zttl--split-pane");
-         sp.getDividers().forEach(divider -> divider.positionProperty().addListener(System.out::println));
+         this.layoutDividerPosition.bindBidirectional(sp.getDividers().get(0).positionProperty());
       }
 
       this.getStyleClass().addAll("zttl--container");

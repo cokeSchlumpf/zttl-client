@@ -267,6 +267,7 @@ public class MarkdownEditor extends AnchorPane {
       int lastKwEnd = 0;
 
       StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+      spansBuilder.add(Collections.emptyList(), 0);
 
       while (matcher.find()) {
          spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);

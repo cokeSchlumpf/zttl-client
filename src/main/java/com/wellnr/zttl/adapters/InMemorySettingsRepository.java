@@ -5,11 +5,10 @@ import com.wellnr.zttl.core.model.State;
 import com.wellnr.zttl.core.ports.SettingsRepository;
 
 import java.nio.file.Path;
-import java.util.List;
 
 public class InMemorySettingsRepository implements SettingsRepository {
 
-   private State state = State.apply(List.of(), null);
+   private State state = State.apply();
 
    private Settings settings = Settings.apply(Path.of("/Users/michael/Workspaces/zettelkastens-data"));
 

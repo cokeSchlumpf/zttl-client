@@ -12,7 +12,10 @@ import com.wellnr.zttl.core.views.app.model.Note;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.event.Event;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -93,19 +96,35 @@ public class AppController {
          this.onQuit();
       });
 
-      {
-         state
-            .getOpenNotes()
-            .stream()
-            .map(id -> allNotes.stream().filter(n -> n.getId().get().equals(id)).findFirst())
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .forEach(this::onOpenNote);
+      this.state
+         .getOpenNotes()
+         .stream()
+         .map(id -> allNotes.stream().filter(n -> n.getId().get().equals(id)).findFirst())
+         .filter(Optional::isPresent)
+         .map(Optional::get)
+         .forEach(this::onOpenNote);
 
-         onSelectedNoteChanged(state
-            .getSelectedNote()
-            .flatMap(id -> allNotes.stream().filter(n -> n.getId().get().equals(id)).findFirst()));
+      onSelectedNoteChanged(state
+         .getSelectedNote()
+         .flatMap(id -> allNotes.stream().filter(n -> n.getId().get().equals(id)).findFirst()));
+   }
+
+   public void init() {
+      this.primaryStage.setFullScreenExitKeyCombination(new KeyCodeCombination(KeyCode.F11));
+
+      if (!this.state.getLayoutFullscreen()) {
+         this.primaryStage.setWidth(this.state.getLayoutSizeWidth());
+         this.primaryStage.setHeight(this.state.getLayoutSizeHeight());
+      } else {
+         this.primaryStage.setFullScreen(this.state.getLayoutFullscreen());
       }
+
+      this.view.layoutDividerPosition.setValue(this.state.getLayoutDividerPosition());
+      this.primaryStage.setTitle("Zttl Notes");
+      this.primaryStage.show();
+
+      // After full screen this is required again ...
+      this.view.layoutDividerPosition.setValue(this.state.getLayoutDividerPosition());
    }
 
    public AppView getView() {
@@ -334,8 +353,18 @@ public class AppController {
 
    private void saveState() {
       State newState = this.state
+         .withLayoutDividerPosition(view.layoutDividerPosition.doubleValue())
+         .withLayoutFullscreen(primaryStage.isFullScreen())
          .withOpenNotes(model.getOpenNotes().stream().map(n -> n.getId().get()).collect(Collectors.toList()))
          .withSelectedNote(model.getCurrentNote().get().map(n -> n.getId().get()).orElse(null));
+
+         if (newState.getLayoutFullscreen()) {
+            newState = newState
+               .withLayoutSizeWidth(primaryStage.getWidth())
+               .withLayoutSizeHeight(primaryStage.getHeight());
+         }
+
+      System.out.println(newState.getLayoutDividerPosition());
 
       settingsRepository.saveState(newState);
    }

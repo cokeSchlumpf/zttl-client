@@ -6,10 +6,7 @@ import com.wellnr.zttl.core.ports.NotesRepository;
 import com.wellnr.zttl.core.ports.SettingsRepository;
 import com.wellnr.zttl.core.views.app.AppController;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 public class Application extends javafx.application.Application {
 
@@ -18,20 +15,17 @@ public class Application extends javafx.application.Application {
         try {
             SettingsRepository settingsRepository = UserHomeDirSettingsRepository.create();
             NotesRepository notesRepository = FilesystemNotesRepository.apply(settingsRepository.getSettings().getWorkDirectory());
+            AppController controller = new AppController(notesRepository, settingsRepository, primaryStage);
 
-            Scene scene = new Scene(new AppController(notesRepository, settingsRepository, primaryStage).getView());
+            Scene scene = new Scene(controller.getView());
 
             scene.getStylesheets().addAll(
                     "https://fonts.googleapis.com/css?family=IBM+Plex+Sans:400,500,600,700&display=swap",
                     "https://fonts.googleapis.com/css?family=IBM+Plex+Mono:300,400,500,600,700&display=swap",
                     "views/styles.css");
 
-            // primaryStage.initStyle(StageStyle.DECORATED);
-            primaryStage.setFullScreenExitKeyCombination(new KeyCodeCombination(KeyCode.F11));
-            primaryStage.setFullScreen(true);
-            primaryStage.setTitle("Zttl Notes");
             primaryStage.setScene(scene);
-            primaryStage.show();
+            controller.init();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
