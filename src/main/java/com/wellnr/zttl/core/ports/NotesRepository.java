@@ -10,6 +10,8 @@ public interface NotesRepository {
 
     Note createNewNote();
 
+    List<Note> findNotesByTitle(String query);
+
     Optional<Note> getNoteById(String id);
 
     List<Note> getNotes();

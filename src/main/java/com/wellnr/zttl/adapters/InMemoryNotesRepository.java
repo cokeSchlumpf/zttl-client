@@ -41,6 +41,15 @@ public class InMemoryNotesRepository implements NotesRepository {
    }
 
    @Override
+   public List<Note> findNotesByTitle(String query) {
+      return notes
+         .values()
+         .stream()
+         .filter(n -> n.getTitle().contains(query))
+         .collect(Collectors.toList());
+   }
+
+   @Override
    public Optional<Note> getNoteById(String id) {
       return notes
          .values()

@@ -269,13 +269,9 @@
 }
 
 .zttl--markdown-editor--text-area {
-    -fx-font-family: 'IBM Plex Sans', sans-serif;
+    -fx-font-family: 'IBM Plex Mono', monospace;
     -fx-font-size: 16;
     -fx-background-color: #1d1d1d;
-}
-
-.zttl--markdown-editor--text-area .paragraph-text {
-    -foo-fx-padding: 0 0 0 10;
 }
 
 .zttl--markdown-editor--text-area .text {
@@ -284,14 +280,17 @@
 
 .zttl--markdown-editor--text-area .lineno {
     -fx-background-color: #1d1d1d;
-    -fx-pref-width: 40;
+    -fx-border-color: #1d1d1d;
+    -fx-border-width: 0 10 0 0;
+    -fx-alignment: center-left;
+    -fx-text-alignment: left;
 }
 
 .zttl--markdown-editor--text-area .lineno .text {
     -fx-font-style: normal;
-    -fx-font-family: 'IBM Plex Sans', sans-serif;
+    -fx-font-family: 'IBM Plex Mono', monospace;
     -fx-font-size: 16;
-    -fx-fill: #959695;
+    -fx-fill: #373837;
 }
 
 .zttl--markdown-editor--text-area .caret {
@@ -470,4 +469,31 @@
 
 .zttl--search-replace--button:focused {
     -fx-border-color: #0b84ff;
+}
+
+/*
+ * auto-complete-popup
+ */
+.zttl--auto-complete-popup {
+    -fx-pref-width: 600;
+}
+
+.auto-complete-popup.zttl--auto-complete-popup > .list-view {
+    -fx-pref-width: 600;
+    -fx-background-color: #363836;
+    -fx-background-insets: 0;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.2) , 12, 0.0 , 0 , 8 );
+}
+
+.auto-complete-popup.zttl--auto-complete-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
+    -fx-padding: 4 0 4 5;
+    -fx-background-color: #363836;
+}
+.auto-complete-popup.zttl--auto-complete-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected {
+    -fx-background-color:  #252426;
+}
+
+.auto-complete-popup.zttl--auto-complete-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover,
+.auto-complete-popup.zttl--auto-complete-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected:hover {
+    -fx-background-color: #0b84ff;
 }

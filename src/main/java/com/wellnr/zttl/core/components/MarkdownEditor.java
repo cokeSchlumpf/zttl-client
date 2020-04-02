@@ -1,16 +1,23 @@
 package com.wellnr.zttl.core.components;
 
+import com.wellnr.zttl.adapters.InMemoryNotesRepository;
 import com.wellnr.zttl.common.SearchReplaceString;
 import com.wellnr.zttl.common.StringMatch;
 import com.wellnr.zttl.common.StringMatches;
 import javafx.application.Platform;
 import javafx.beans.property.*;
+import javafx.scene.control.IndexRange;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.stage.Popup;
 import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.model.Paragraph;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.fxmisc.wellbehaved.event.EventPattern;
@@ -28,9 +35,9 @@ public class MarkdownEditor extends AnchorPane {
    private static final String HEADLINE_PATTERN = "^#[^\n]*|\n#[^\n]*";
    private static final String BULLET_LIST_ITEM_PATTERN = "^[\\s]*\\*\\s|\n[\\s]*\\*\\s";
    private static final String DASH_LIST_ITEM_PATTERN = "^[\\s]*-\\s|\n[\\s]*\\*\\s";
-   private static final String LINK_PATTERN = "\\[[^\n]*]";
+   private static final String LINK_PATTERN = "\\[[^\n\\[\\]]*]";
    private static final String CODE_PATTERN = "\n```.*\n```|^```.*\n```|`[^\n^`]+`";
-   private static final String URL_PATTERN = "(https?|ftp|file)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_.|]";
+   private static final String URL_PATTERN = "(https?|ftp|file|note)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_.|]";
    private static final String RELATIVE_PATH_PATTERN = "[.]{1,2}/[-A-Za-z0-9+&@#/%=~_.|]*";
 
    private static final Pattern PATTERN = Pattern.compile(
@@ -69,7 +76,7 @@ public class MarkdownEditor extends AnchorPane {
       this.codeArea = new CodeArea();
       this.codeArea.getStyleClass().add("zttl--markdown-editor--text-area");
       this.codeArea.setWrapText(true);
-      // this.codeArea.setParagraphGraphicFactory(LineNumberFactory.get(this.codeArea));
+      this.codeArea.setParagraphGraphicFactory(LineNumberFactory.get(this.codeArea));
 
       this.textProperty = new SimpleStringProperty();
       this.textProperty.addListener((observable, oldValue, newValue) -> {
@@ -167,6 +174,13 @@ public class MarkdownEditor extends AnchorPane {
             }
          });
 
+      // TODO
+      AutoCompletionProvider provider = new AutoCompletionProvider(new InMemoryNotesRepository());
+
+      new AutoCompletionCodeAreaBind(
+         codeArea,
+         provider.suggestionProvider,
+         provider.replaceTextProvider);
 
       this.getChildren().add(this.codeArea);
 

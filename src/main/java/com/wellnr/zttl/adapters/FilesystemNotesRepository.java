@@ -56,6 +56,12 @@ public class FilesystemNotesRepository implements NotesRepository {
    }
 
    @Override
+   public List<Note> findNotesByTitle(String query) {
+      // TODO
+      return List.of();
+   }
+
+   @Override
    public Optional<Note> getNoteById(String id) {
       String name = id + ".md";
       return fromFile(archiveDir.resolve(name)).or(() -> fromFile(inboxDir.resolve(name)));
