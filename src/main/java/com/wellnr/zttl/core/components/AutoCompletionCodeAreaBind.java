@@ -20,12 +20,11 @@ public class AutoCompletionCodeAreaBind extends Popup {
 
    public AutoCompletionCodeAreaBind(
       CodeArea codeArea,
-      BiFunction<String, Integer, Collection<AutoCompletionSuggestion>> suggestionProvider,
-      BiFunction<String, Integer, IndexRange> replaceTextProvider) {
+      AutoCompletionProvider provider) {
 
       this.codeArea = codeArea;
-      this.suggestionProvider = suggestionProvider;
-      this.replaceTextProvider = replaceTextProvider;
+      this.suggestionProvider = provider.suggestionProvider;
+      this.replaceTextProvider = provider.replaceTextProvider;
       this.popup = new AutoCompletePopup<>();
       this.popup.getStyleClass().add("zttl--auto-complete-popup");
 
@@ -68,6 +67,11 @@ public class AutoCompletionCodeAreaBind extends Popup {
 
    public void hidePopup() {
       popup.hide();
+   }
+
+   public void setAutoCompletionProvider(AutoCompletionProvider provider) {
+      this.suggestionProvider = provider.suggestionProvider;
+      this.replaceTextProvider = provider.replaceTextProvider;
    }
 
    private void completeUserInput(String suggestion) {

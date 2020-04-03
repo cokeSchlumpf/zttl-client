@@ -15,7 +15,6 @@ import javafx.event.Event;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -72,6 +71,7 @@ public class AppController {
       this.model = new App(openNotes, inboxNotes, archiveNotes, knownTags, settingsRepository.getSettings());
       this.view = new AppView(
          model,
+         notesRepository,
          primaryStage,
          this::onAddTagToNote,
          this::onSelectedNoteChanged,

@@ -2,19 +2,16 @@ package com.wellnr.zttl.core.views.app;
 
 import com.wellnr.zttl.core.components.*;
 import com.wellnr.zttl.core.model.Settings;
+import com.wellnr.zttl.core.ports.NotesRepository;
 import com.wellnr.zttl.core.views.app.model.App;
 import com.wellnr.zttl.core.views.app.model.Note;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -37,6 +34,7 @@ public class AppView extends BorderPane {
 
    public AppView(
       final App model,
+      final NotesRepository notesRepository,
       final Stage primaryStage,
       final BiConsumer<Note, String> onAddTagToNote,
       final Consumer<Optional<Note>> onNoteChanged,
@@ -108,7 +106,7 @@ public class AppView extends BorderPane {
 
             c.getAddedSubList().forEach(note -> {
                NoteTab tab = new NoteTab(
-                  note, model.getKnownTags(), onNoteClosed, onNoteCloseRequest,
+                  note, notesRepository, model.getKnownTags(), onNoteClosed, onNoteCloseRequest,
                   onAddTagToNote, onRemoveTagFromNote);
 
                this.tabPane.getTabs().add(tab);

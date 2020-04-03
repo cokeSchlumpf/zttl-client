@@ -1,5 +1,6 @@
 package com.wellnr.zttl.core.components;
 
+import com.wellnr.zttl.core.ports.NotesRepository;
 import com.wellnr.zttl.core.views.app.model.Note;
 import javafx.collections.ObservableSet;
 import javafx.scene.control.Label;
@@ -8,19 +9,15 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class NoteEditor extends BorderPane {
 
-    private final Note note;
-
     public NoteEditor(
             Note note,
+            NotesRepository notesRepository,
             ObservableSet<String> knownTags,
-            Consumer<Note> onClose,
             BiConsumer<Note, String> onAddTag,
             BiConsumer<Note, String> onRemoveTag) {
-        this.note = note;
 
         BorderPane titleRow = new BorderPane();
         titleRow.setLeft(new Label("Title"));
@@ -49,6 +46,7 @@ public class NoteEditor extends BorderPane {
         MarkdownEditor editor = new MarkdownEditor();
         editor.setText(note.getContent().get());
         editor.textProperty.bindBidirectional(note.getContent());
+        editor.setAutoCompletionProvider(new AutoCompletionProvider(notesRepository));
 
         NoteStatus status = new NoteStatus(note);
 

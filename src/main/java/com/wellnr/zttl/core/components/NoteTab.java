@@ -1,5 +1,6 @@
 package com.wellnr.zttl.core.components;
 
+import com.wellnr.zttl.core.ports.NotesRepository;
 import com.wellnr.zttl.core.views.app.model.Note;
 import javafx.collections.ObservableSet;
 import javafx.event.Event;
@@ -14,13 +15,14 @@ public class NoteTab extends Tab {
 
     public NoteTab(
             Note note,
+            NotesRepository notesRepository,
             ObservableSet<String> knownTags,
             Consumer<Note> onClose,
             BiConsumer<Note, Event> onCloseRequest,
             BiConsumer<Note, String> onAddTagToNote,
             BiConsumer<Note, String> onRemoveTagFromNote) {
 
-        NoteEditor editor = new NoteEditor(note, knownTags, onClose, onAddTagToNote, onRemoveTagFromNote);
+        NoteEditor editor = new NoteEditor(note, notesRepository, knownTags, onAddTagToNote, onRemoveTagFromNote);
 
         this.setContent(editor);
         this.textProperty().bind(note.getTitle());

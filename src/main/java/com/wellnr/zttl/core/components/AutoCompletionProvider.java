@@ -20,6 +20,11 @@ public class AutoCompletionProvider {
 
    public final BiFunction<String, Integer, IndexRange> replaceTextProvider;
 
+   public AutoCompletionProvider() {
+      this.replaceTextProvider = (text, caret) -> IndexRange.normalize(0, 0);
+      this.suggestionProvider = (text, caret) -> List.of();
+   }
+
    public AutoCompletionProvider(NotesRepository notes) {
       suggestionProvider = (text, caret) -> {
          Matcher referenceMatcher = REFERENCE_NAME_PATTERN.matcher(getStringBeforeCaret(text, caret));
