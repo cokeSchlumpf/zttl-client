@@ -2,8 +2,6 @@ package com.wellnr.zttl.core.components;
 
 import com.wellnr.zttl.core.views.app.model.App;
 import com.wellnr.zttl.core.views.app.model.Note;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
