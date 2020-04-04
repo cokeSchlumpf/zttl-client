@@ -1,3 +1,3 @@
 #!/bin/bash
 
-java -jar /Users/michael/Workspaces/zettelkasten-jfx/build/libs/zettelkasten-jfx-1.0-SNAPSHOT.jar
+java -Xdock:icon=/Users/michael/Workspaces/zettelkasten-jfx/src/dist/icon.png -jar /Users/michael/Workspaces/zettelkasten-jfx/build/libs/zettelkasten-jfx-1.0-SNAPSHOT.jar
