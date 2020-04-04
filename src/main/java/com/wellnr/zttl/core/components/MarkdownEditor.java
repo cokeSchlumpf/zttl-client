@@ -1,8 +1,12 @@
 package com.wellnr.zttl.core.components;
 
+import com.sun.javafx.application.HostServicesDelegate;
+import com.wellnr.zttl.Application;
 import com.wellnr.zttl.common.SearchReplaceString;
 import com.wellnr.zttl.common.StringMatch;
 import com.wellnr.zttl.common.StringMatches;
+import com.wellnr.zttl.common.events.EventHandlerProperty;
+import com.wellnr.zttl.common.events.SubscribableEvent;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.scene.input.KeyCode;
@@ -49,6 +53,8 @@ public class MarkdownEditor extends AnchorPane {
 
    public final BooleanProperty searchActive;
 
+   private final EventHandlerProperty<String> onOpenNoteProperty;
+
    private final SearchReplaceBox searchReplaceBox;
 
    private final ObjectProperty<StringMatches> matches;
@@ -65,6 +71,7 @@ public class MarkdownEditor extends AnchorPane {
 
       this.replaceActive = new SimpleBooleanProperty();
       this.searchActive = new SimpleBooleanProperty();
+      this.onOpenNoteProperty = new EventHandlerProperty<>();
 
       this.matches = new SimpleObjectProperty<>(StringMatches.EMPTY);
       this.matches.addListener((observable, oldValue, newValue) -> this.computeHighlighting());
@@ -78,7 +85,7 @@ public class MarkdownEditor extends AnchorPane {
          autoCompletionCodeAreaBind.hidePopup();
 
 
-         if (event.isMetaDown()) {
+         if (event.isMetaDown() && !event.isShiftDown()) {
             /*
              * Open Link if linked is clicked
              */
@@ -88,7 +95,18 @@ public class MarkdownEditor extends AnchorPane {
 
             while (matcher.find()) {
                if (matcher.group("URL") != null && matcher.start() <= pos && matcher.end() >= pos) {
-                  // System.out.println(matcher.group());
+                  String url = matcher.group();
+
+                  if (url.startsWith("note://")) {
+                     String id = url.substring("note://".length());
+                     this.onOpenNoteProperty.emit(id);
+                  }
+
+                  try {
+                     Application.getInstance().getHostServices().showDocument(url);
+                  } catch (Exception e) {
+                     e.printStackTrace();
+                  }
                }
             }
          }
@@ -170,11 +188,37 @@ public class MarkdownEditor extends AnchorPane {
                return InputHandler.Result.PROCEED;
             });
 
+      InputMap<KeyEvent> metaDown = InputMap
+         .process(
+            EventPattern.keyPressed(),
+            e -> {
+               if (e.isMetaDown()) {
+                  this.codeArea.getStyleClass().add("zttl--meta-down");
+               }
+
+               return InputHandler.Result.PROCEED;
+            }
+         );
+
+      InputMap<KeyEvent> metaUp = InputMap
+         .process(
+            EventPattern.keyReleased(),
+            e -> {
+               if (!e.isMetaDown()) {
+                  this.codeArea.getStyleClass().remove("zttl--meta-down");
+               }
+
+               return InputHandler.Result.PROCEED;
+            }
+         );
+
       Nodes.addInputMap(this.codeArea, closeSearch);
       Nodes.addInputMap(this.codeArea, im);
       Nodes.addInputMap(this.codeArea, search);
       Nodes.addInputMap(this.codeArea, replace);
       Nodes.addInputMap(this.codeArea, tabs);
+      Nodes.addInputMap(this.codeArea, metaDown);
+      Nodes.addInputMap(this.codeArea, metaUp);
 
       this
          .codeArea
@@ -332,6 +376,10 @@ public class MarkdownEditor extends AnchorPane {
 
 
       codeArea.setStyleSpans(0, styles);
+   }
+
+   public SubscribableEvent<String> onOpenNote() {
+      return onOpenNoteProperty;
    }
 
    private void search() {

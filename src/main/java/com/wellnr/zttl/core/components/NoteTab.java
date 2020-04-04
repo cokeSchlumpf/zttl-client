@@ -20,9 +20,10 @@ public class NoteTab extends Tab {
             Consumer<Note> onClose,
             BiConsumer<Note, Event> onCloseRequest,
             BiConsumer<Note, String> onAddTagToNote,
+            Consumer<String> onOpenNote,
             BiConsumer<Note, String> onRemoveTagFromNote) {
 
-        NoteEditor editor = new NoteEditor(note, notesRepository, knownTags, onAddTagToNote, onRemoveTagFromNote);
+        NoteEditor editor = new NoteEditor(note, notesRepository, knownTags, onAddTagToNote, onOpenNote, onRemoveTagFromNote);
 
         this.setContent(editor);
         this.textProperty().bind(note.getTitle());

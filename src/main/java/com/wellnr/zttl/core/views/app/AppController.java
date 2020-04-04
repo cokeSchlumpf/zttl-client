@@ -78,6 +78,7 @@ public class AppController {
          this::onNoteCloseRequest,
          this::onNoteClosed,
          this::onOpenNote,
+         this::onOpenNoteById,
          this::onRemoveTagFromNote,
          this::onAbout,
          this::onClose,
@@ -120,7 +121,7 @@ public class AppController {
       }
 
       this.view.layoutDividerPosition.setValue(this.state.getLayoutDividerPosition());
-      this.primaryStage.setTitle("Zttl Notes");
+      this.primaryStage.setTitle("Zettels");
       this.primaryStage.show();
 
       // After full screen this is required again ...
@@ -277,6 +278,18 @@ public class AppController {
       } else {
          model.getCurrentNote().setValue(Optional.of(note));
       }
+   }
+
+   private void onOpenNoteById(String id) {
+      List<Note> allNotes = new ArrayList<>();
+      allNotes.addAll(model.getInboxNotes());
+      allNotes.addAll(model.getArchivedNotes());
+
+      allNotes
+         .stream()
+         .filter(note -> note.getId().get().equals(id))
+         .findFirst()
+         .ifPresent(this::onOpenNote);
    }
 
    private void onRemoveTagFromNote(Note note, String tag) {

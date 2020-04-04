@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class NoteEditor extends BorderPane {
 
@@ -17,6 +18,7 @@ public class NoteEditor extends BorderPane {
             NotesRepository notesRepository,
             ObservableSet<String> knownTags,
             BiConsumer<Note, String> onAddTag,
+            Consumer<String> onOpenNote,
             BiConsumer<Note, String> onRemoveTag) {
 
         BorderPane titleRow = new BorderPane();
@@ -47,6 +49,7 @@ public class NoteEditor extends BorderPane {
         editor.setText(note.getContent().get());
         editor.textProperty.bindBidirectional(note.getContent());
         editor.setAutoCompletionProvider(new AutoCompletionProvider(notesRepository));
+        editor.onOpenNote().addListener(onOpenNote::accept);
 
         NoteStatus status = new NoteStatus(note);
 

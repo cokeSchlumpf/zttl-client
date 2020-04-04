@@ -10,8 +10,16 @@ import javafx.stage.Stage;
 
 public class Application extends javafx.application.Application {
 
+    private static Application INSTANCE;
+
+    public static Application getInstance() {
+        return INSTANCE;
+    }
+
     @Override
     public void start(Stage primaryStage) {
+        INSTANCE = this;
+
         try {
             SettingsRepository settingsRepository = UserHomeDirSettingsRepository.create();
             NotesRepository notesRepository = FilesystemNotesRepository.apply(settingsRepository.getSettings().getWorkDirectory());

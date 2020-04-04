@@ -41,6 +41,7 @@ public class AppView extends BorderPane {
       final BiConsumer<Note, Event> onNoteCloseRequest,
       final Consumer<Note> onNoteClosed,
       final Consumer<Note> onOpenNote,
+      final Consumer<String> onOpenNoteById,
       final BiConsumer<Note, String> onRemoveTagFromNote,
       final Runnable onAbout,
       final Runnable onClose,
@@ -83,7 +84,7 @@ public class AppView extends BorderPane {
          TabPane tabPane = new TabPane();
          tabPane.getStyleClass().add("zttl--sidepanel");
          tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-         tabPane.getTabs().add(new Tab("BROWSE ZTTLS", noteBrowser));
+         tabPane.getTabs().add(new Tab("BROWSE", noteBrowser));
          sp.getItems().add(tabPane);
       }
 
@@ -107,7 +108,7 @@ public class AppView extends BorderPane {
             c.getAddedSubList().forEach(note -> {
                NoteTab tab = new NoteTab(
                   note, notesRepository, model.getKnownTags(), onNoteClosed, onNoteCloseRequest,
-                  onAddTagToNote, onRemoveTagFromNote);
+                  onAddTagToNote, onOpenNoteById, onRemoveTagFromNote);
 
                this.tabPane.getTabs().add(tab);
                this.tabPane.getSelectionModel().select(tab);

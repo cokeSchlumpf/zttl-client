@@ -25,32 +25,6 @@ public class AppMenu extends MenuBar {
       Runnable onQuit) {
 
       {
-         MenuItem aboutMenuItem = new MenuItem("About Zettels");
-         aboutMenuItem.setOnAction(event -> onAbout.run());
-
-         MenuItem settingsMenuItem = new MenuItem("Settings ...");
-         settingsMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.COMMA, KeyCodeCombination.META_DOWN));
-         settingsMenuItem.setOnAction(event -> onSettings.run());
-
-         MenuItem quitMenuItem = new MenuItem("Quit Zettels");
-         quitMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCodeCombination.META_DOWN));
-         quitMenuItem.setOnAction(event -> onQuit.run());
-
-         Menu mainMenu = new Menu("Zettels");
-         mainMenu.getItems().addAll(aboutMenuItem, settingsMenuItem, new SeparatorMenuItem(), quitMenuItem);
-
-         var os = System.getProperty("os.name");
-         var isMacOS = os != null && os.startsWith("Mac");
-
-         if (isMacOS) {
-            this.useSystemMenuBarProperty().set(true);
-            this.getMenus().add(mainMenu);
-         } else {
-            this.getMenus().add(mainMenu);
-         }
-      }
-
-      {
          var noteDisabled = model.getCurrentNote().get().isEmpty();
          var notesDisabled = model.getOpenNotes().isEmpty();
 
@@ -110,6 +84,32 @@ public class AppMenu extends MenuBar {
             moveToArchive, moveToInbox);
 
          this.getMenus().add(noteMenu);
+      }
+
+      {
+         MenuItem aboutMenuItem = new MenuItem("About Zettels");
+         aboutMenuItem.setOnAction(event -> onAbout.run());
+
+         MenuItem settingsMenuItem = new MenuItem("Settings ...");
+         settingsMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.COMMA, KeyCodeCombination.META_DOWN));
+         settingsMenuItem.setOnAction(event -> onSettings.run());
+
+         MenuItem quitMenuItem = new MenuItem("Quit Zettels");
+         quitMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.Q, KeyCodeCombination.META_DOWN));
+         quitMenuItem.setOnAction(event -> onQuit.run());
+
+         Menu mainMenu = new Menu("Help");
+         mainMenu.getItems().addAll(aboutMenuItem, settingsMenuItem, new SeparatorMenuItem(), quitMenuItem);
+
+         var os = System.getProperty("os.name");
+         var isMacOS = os != null && os.startsWith("Mac");
+
+         if (isMacOS) {
+            this.useSystemMenuBarProperty().set(true);
+            this.getMenus().add(mainMenu);
+         } else {
+            this.getMenus().add(mainMenu);
+         }
       }
 
       this.getStyleClass().add("zttl--menu");
