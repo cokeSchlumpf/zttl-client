@@ -16,6 +16,7 @@ import java.util.Optional;
 public class State {
 
    private static final String LAYOUT_DIVIDER_POSITION = "layout-divider-position";
+   private static final String LAYOUT_NOTES_BROWSER_DIVIDER_POSITION = "layout-notes-browser-divider-position";
    private static final String LAYOUT_FULLSCREEN = "layout-fullscreen";
    private static final String LAYOUT_SIZE_WIDTH = "layout-size-width";
    private static final String LAYOUT_SIZE_HEIGHT = "layout-size-height";
@@ -24,6 +25,9 @@ public class State {
 
    @JsonProperty(LAYOUT_DIVIDER_POSITION)
    Double layoutDividerPosition;
+
+   @JsonProperty(LAYOUT_NOTES_BROWSER_DIVIDER_POSITION)
+   List<Double> layoutNotesBrowserDividerPositions;
 
    @JsonProperty(LAYOUT_FULLSCREEN)
    Boolean layoutFullscreen;
@@ -43,6 +47,7 @@ public class State {
    @JsonCreator
    public static State apply(
       @JsonProperty(LAYOUT_DIVIDER_POSITION) Double layoutDividerPosition,
+      @JsonProperty(LAYOUT_NOTES_BROWSER_DIVIDER_POSITION) List<Double> layoutNotesBrowserDividerPositions,
       @JsonProperty(LAYOUT_FULLSCREEN) Boolean layoutFullscreen,
       @JsonProperty(LAYOUT_SIZE_HEIGHT) Double layoutSizeHeight,
       @JsonProperty(LAYOUT_SIZE_WIDTH) Double layoutSizeWidth,
@@ -50,17 +55,19 @@ public class State {
       @JsonProperty(SELECTED_NOTE) String selectedNote) {
 
       if (layoutDividerPosition == null) layoutDividerPosition = 0.3;
+      if (layoutNotesBrowserDividerPositions == null) layoutNotesBrowserDividerPositions = List.of();
       if (layoutFullscreen == null) layoutFullscreen = false;
       if (layoutSizeHeight == null) layoutSizeHeight = 600.0;
       if (layoutSizeWidth == null) layoutSizeWidth = 800.0;
+      if (openNotes == null) openNotes = List.of();
 
       return new State(
-         layoutDividerPosition, layoutFullscreen, layoutSizeHeight,
+         layoutDividerPosition, layoutNotesBrowserDividerPositions, layoutFullscreen, layoutSizeHeight,
          layoutSizeWidth, openNotes, selectedNote);
    }
 
    public static State apply() {
-      return apply(null, null, null, null, List.of(), null);
+      return apply(null, null, null, null, null, null, null);
    }
 
    public Optional<String> getSelectedNote() {

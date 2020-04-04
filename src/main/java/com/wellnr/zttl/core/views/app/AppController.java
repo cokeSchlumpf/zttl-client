@@ -124,11 +124,13 @@ public class AppController {
       }
 
       this.view.layoutDividerPosition.setValue(this.state.getLayoutDividerPosition());
+      this.view.layoutNotesBrowserDividerPositions.setValue(this.state.getLayoutNotesBrowserDividerPositions());
       this.primaryStage.setTitle("Zettels");
       this.primaryStage.show();
 
       // After full screen this is required again ...
       this.view.layoutDividerPosition.setValue(this.state.getLayoutDividerPosition());
+      this.view.layoutNotesBrowserDividerPositions.setValue(this.state.getLayoutNotesBrowserDividerPositions());
    }
 
    public AppView getView() {
@@ -384,6 +386,7 @@ public class AppController {
    private void saveState() {
       State newState = this.state
          .withLayoutDividerPosition(view.layoutDividerPosition.doubleValue())
+         .withLayoutNotesBrowserDividerPositions(view.layoutNotesBrowserDividerPositions.get())
          .withLayoutFullscreen(primaryStage.isFullScreen())
          .withOpenNotes(model.getOpenNotes().stream().map(n -> n.getId().get()).collect(Collectors.toList()))
          .withSelectedNote(model.getCurrentNote().get().map(n -> n.getId().get()).orElse(null));

@@ -2,6 +2,9 @@ package com.wellnr.zttl.core.components;
 
 import com.wellnr.zttl.core.views.app.model.App;
 import com.wellnr.zttl.core.views.app.model.Note;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ListChangeListener;
@@ -16,13 +19,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 public class NoteBrowser extends AnchorPane {
 
    private final StringProperty filter;
 
-   public NoteBrowser(App model, Consumer<Note> onOpen) {
+   public NoteBrowser(App model, Consumer<Note> onOpen, ObjectProperty<List<Double>> dividerPositions) {
       this.filter = new SimpleStringProperty("");
 
       SplitPane sp = new SplitPane();
@@ -42,6 +46,25 @@ public class NoteBrowser extends AnchorPane {
       sp.getItems().add(renderSection("INBOX", model.getInboxNotes(), onOpen));
       sp.getItems().add(renderSection("ARCHIVE", model.getArchivedNotes(), onOpen));
       sp.getItems().add(fldFilter);
+
+      for (int i = 0; i <= 2; i++) {
+         sp.getDividers().get(i).positionProperty().addListener((observable, oldValue, newValue) -> {
+            dividerPositions.setValue(List.of(
+               sp.getDividerPositions()[0],
+               sp.getDividerPositions()[1],
+               sp.getDividerPositions()[2]));
+         });
+      }
+
+      dividerPositions.addListener(observable -> {
+         if (dividerPositions.get().size() >= 3) {
+            sp.setDividerPositions(
+               dividerPositions.get().get(0),
+               dividerPositions.get().get(1),
+               dividerPositions.get().get(2));
+         }
+      });
+
       this.getStyleClass().add("zttl--note-browser");
       this.getChildren().add(sp);
    }

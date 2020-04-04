@@ -6,7 +6,9 @@ import com.wellnr.zttl.core.ports.NotesRepository;
 import com.wellnr.zttl.core.views.app.model.App;
 import com.wellnr.zttl.core.views.app.model.Note;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.scene.control.SplitPane;
@@ -16,6 +18,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -31,6 +34,8 @@ public class AppView extends BorderPane {
    private final Consumer<Settings> onSaveSettings;
 
    public final DoubleProperty layoutDividerPosition;
+
+   public final ObjectProperty<List<Double>> layoutNotesBrowserDividerPositions;
 
    public AppView(
       final App model,
@@ -61,6 +66,7 @@ public class AppView extends BorderPane {
       this.primaryStage = primaryStage;
       this.onSaveSettings = onSaveSettings;
       this.layoutDividerPosition = new SimpleDoubleProperty();
+      this.layoutNotesBrowserDividerPositions = new SimpleObjectProperty<>(List.of());
 
       SplitPane sp = new SplitPane();
       this.setCenter(sp);
@@ -80,7 +86,7 @@ public class AppView extends BorderPane {
          container.getStyleClass().addAll("zttl--sidepanel");
          container.setPrefWidth(200);
 
-         NoteBrowser noteBrowser = new NoteBrowser(model, onOpenNote);
+         NoteBrowser noteBrowser = new NoteBrowser(model, onOpenNote, layoutNotesBrowserDividerPositions);
 
          TabPane tabPane = new TabPane();
          tabPane.getStyleClass().add("zttl--sidepanel");
