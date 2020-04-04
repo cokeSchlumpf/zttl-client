@@ -46,6 +46,7 @@ public class AppView extends BorderPane {
       final Runnable onAbout,
       final Runnable onClose,
       final Runnable onCloseAll,
+      final Runnable onDelete,
       final Runnable onMoveToArchive,
       final Runnable onMoveToInbox,
       final Runnable onNew,
@@ -66,7 +67,7 @@ public class AppView extends BorderPane {
 
       {
          AppMenu menu = new AppMenu(
-            model, onAbout, onClose, onCloseAll,
+            model, onAbout, onClose, onCloseAll, onDelete,
             onMoveToArchive, onMoveToInbox, onNew,
             onSave, onSaveAll,
             onSettings, onQuit);

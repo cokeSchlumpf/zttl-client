@@ -74,6 +74,11 @@ public class InMemoryNotesRepository implements NotesRepository {
    }
 
    @Override
+   public void deleteNote(Note note) {
+      notes.values().remove(note);
+   }
+
+   @Override
    public Note saveNote(Note note) {
       notes.put(note.getId(), note);
       return note;

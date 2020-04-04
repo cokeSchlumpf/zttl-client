@@ -94,6 +94,27 @@ public class FilesystemNotesRepository implements NotesRepository {
    }
 
    @Override
+   public void deleteNote(Note note) {
+      try {
+         String fileName = note.getId() + ".md";
+
+         switch (note.getStatus()) {
+            case NEW:
+               break;
+            case INBOX:
+               Files.deleteIfExists(inboxDir.resolve(fileName));
+               break;
+            case ARCHIVED:
+               Files.deleteIfExists(archiveDir.resolve(fileName));
+               break;
+         }
+      } catch (Exception e) {
+         // TODO mw: Better Exception Handling
+         throw new RuntimeException(e);
+      }
+   }
+
+   @Override
    public Note saveNote(Note note) {
       try {
          Path parent = inboxDir;

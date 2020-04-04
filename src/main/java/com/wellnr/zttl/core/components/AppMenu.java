@@ -16,6 +16,7 @@ public class AppMenu extends MenuBar {
       Runnable onAbout,
       Runnable onClose,
       Runnable onCloseAll,
+      Runnable onDelete,
       Runnable onMoveToArchive,
       Runnable onMoveToInbox,
       Runnable onNew,
@@ -52,12 +53,18 @@ public class AppMenu extends MenuBar {
          moveToInbox.setOnAction(event -> onMoveToInbox.run());
          moveToInbox.setDisable(noteDisabled);
 
+         MenuItem delete = new MenuItem("Delete note");
+         delete.setAccelerator(new KeyCodeCombination(KeyCode.BACK_SPACE, KeyCodeCombination.META_DOWN));
+         delete.setOnAction(event -> onDelete.run());
+         delete.setDisable(noteDisabled);
+
          model.getCurrentNote().addListener(observable -> {
             var disabled = model.getCurrentNote().get().isEmpty();
             save.setDisable(disabled);
             close.setDisable(disabled);
             moveToArchive.setDisable(disabled);
             moveToInbox.setDisable(disabled);
+            delete.setDisable(disabled);
          });
 
          MenuItem saveAllNotes = new MenuItem("Save all notes");
@@ -81,7 +88,8 @@ public class AppMenu extends MenuBar {
             newNote, new SeparatorMenuItem(),
             save, saveAllNotes, new SeparatorMenuItem(),
             close, closeAllNotes, new SeparatorMenuItem(),
-            moveToArchive, moveToInbox);
+            moveToArchive, moveToInbox, new SeparatorMenuItem(),
+            delete);
 
          this.getMenus().add(noteMenu);
       }

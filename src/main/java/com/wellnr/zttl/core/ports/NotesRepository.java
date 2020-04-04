@@ -18,6 +18,8 @@ public interface NotesRepository {
 
     Set<String> getTags();
 
+    void deleteNote(Note note);
+
     Note saveNote(Note note);
 
 }

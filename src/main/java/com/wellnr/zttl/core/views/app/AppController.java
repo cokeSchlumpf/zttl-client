@@ -1,5 +1,6 @@
 package com.wellnr.zttl.core.views.app;
 
+import com.wellnr.zttl.core.components.DeleteNoteMessageBox;
 import com.wellnr.zttl.core.components.SaveAllNotesMessageBox;
 import com.wellnr.zttl.core.components.SaveNoteMessageBox;
 import com.wellnr.zttl.core.model.NoteStatus;
@@ -74,7 +75,7 @@ public class AppController {
          notesRepository,
          primaryStage,
          this::onAddTagToNote,
-         this::onSelectedNoteChanged,
+         note -> onSelectedNoteChanged(note.orElse(null)),
          this::onNoteCloseRequest,
          this::onNoteClosed,
          this::onOpenNote,
@@ -83,6 +84,7 @@ public class AppController {
          this::onAbout,
          this::onClose,
          this::onCloseAll,
+         this::onDelete,
          this::onMoveToArchive,
          this::onMoveToInbox,
          this::onNew,
@@ -107,7 +109,8 @@ public class AppController {
 
       onSelectedNoteChanged(state
          .getSelectedNote()
-         .flatMap(id -> allNotes.stream().filter(n -> n.getId().get().equals(id)).findFirst()));
+         .flatMap(id -> allNotes.stream().filter(n -> n.getId().get().equals(id)).findFirst())
+         .orElse(null));
    }
 
    public void init() {
@@ -189,6 +192,20 @@ public class AppController {
                model.getOpenNotes().clear();
             });
       }
+   }
+
+   private void onDelete() {
+      model.getCurrentNote().get().ifPresent(note -> {
+         var alert = new DeleteNoteMessageBox(primaryStage, note);
+
+         alert.run(
+            () -> {
+               notesRepository.deleteNote(note.toNote());
+               model.getOpenNotes().remove(note);
+               model.getArchivedNotes().remove(note);
+               model.getInboxNotes().remove(note);
+            });
+      });
    }
 
    private void onMoveToArchive() {
@@ -320,9 +337,9 @@ public class AppController {
       this.model.getOpenNotes().forEach(this::onSave);
    }
 
-   private void onSelectedNoteChanged(Optional<Note> note) {
-      this.model.getCurrentNote().setValue(note);
-      this.model.getWordCount().setValue(note.map(n -> n.getContent().get().split(" ").length));
+   private void onSelectedNoteChanged(Note note) {
+      this.model.getCurrentNote().setValue(Optional.ofNullable(note));
+      this.model.getWordCount().setValue(Optional.ofNullable(note).map(n -> n.getContent().get().split(" ").length));
    }
 
    private void onSaveSettings(Settings settings) {
@@ -371,11 +388,11 @@ public class AppController {
          .withOpenNotes(model.getOpenNotes().stream().map(n -> n.getId().get()).collect(Collectors.toList()))
          .withSelectedNote(model.getCurrentNote().get().map(n -> n.getId().get()).orElse(null));
 
-         if (newState.getLayoutFullscreen()) {
-            newState = newState
-               .withLayoutSizeWidth(primaryStage.getWidth())
-               .withLayoutSizeHeight(primaryStage.getHeight());
-         }
+      if (newState.getLayoutFullscreen()) {
+         newState = newState
+            .withLayoutSizeWidth(primaryStage.getWidth())
+            .withLayoutSizeHeight(primaryStage.getHeight());
+      }
 
       settingsRepository.saveState(newState);
    }

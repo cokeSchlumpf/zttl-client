@@ -16,7 +16,7 @@ public class AutoCompleteTextField extends StackPane {
 
     private final SortedSet<String> entries;
 
-    private List<String> results = null;
+    private List<String> results = new LinkedList<>();
 
     private TextField actual;
 
