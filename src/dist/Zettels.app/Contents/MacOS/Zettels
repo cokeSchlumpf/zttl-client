@@ -1,3 +1,5 @@
 #!/bin/bash
 
-java -Xdock:icon=/Users/michael/Workspaces/zettelkasten-jfx/src/dist/icon.png -jar /Users/michael/Workspaces/zettelkasten-jfx/build/libs/zettelkasten-jfx-1.0-SNAPSHOT.jar
+BASEDIR=$(dirname "$0")
+echo $BASEDIR > /Users/michael/Downloads/out.txt
+java -Xdock:icon=$BASEDIR/../Resources/icon.png -jar /Users/michael/Workspaces/zettelkasten-jfx/build/libs/zettelkasten-jfx-1.0-SNAPSHOT.jar
