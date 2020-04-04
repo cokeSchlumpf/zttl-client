@@ -1,8 +1,22 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url = 'https://oss.sonatype.org/content/repositories/snapshots/' }
+    }
+
+    dependencies {
+        classpath "com.hendraanggrian:packr-gradle-plugin:0.1"
+    }
+}
+
 plugins {
     id 'application'
+    id 'maven'
     id "io.freefair.lombok" version "4.1.6"
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
+
+apply plugin: 'com.hendraanggrian.packr'
 
 group 'com.wellnr'
 version '1.0-SNAPSHOT'
@@ -11,6 +25,9 @@ sourceCompatibility = 11
 
 repositories {
     mavenCentral()
+    jcenter()
+
+    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots/' }
 }
 
 javafx {
@@ -19,6 +36,10 @@ javafx {
 }
 
 dependencies {
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:win"
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:linux"
+    runtimeOnly "org.openjfx:javafx-graphics:$javafx.version:mac"
+
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.10.3'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.10.3'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.10.3'
@@ -34,3 +55,30 @@ dependencies {
 }
 
 mainClassName = 'com.wellnr.zttl.Application'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.wellnr.zttl.Launcher'
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+packr {
+    executable 'Zettels'
+    classpath 'build/libs/zettelkasten-jfx-1.0-SNAPSHOT.jar'
+    mainClass 'com.wellnr.zttl.Launcher'
+    vmArgs 'Xmx1G'
+    // resources 'image.jpg', 'path/to/other.jpg'
+    outputDirectory 'build/dist'
+    verbose true
+
+    macOS {
+        name 'Zettels.app'
+        jdk '/Library/Java/JavaVirtualMachines/jdk-11.0.5.jdk/Contents/Home'
+        icon 'src/dist/icon.ico'
+        bundleId 'com.wellnr.zettels'
+    }
+}

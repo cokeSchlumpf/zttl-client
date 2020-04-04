@@ -1,6 +1,5 @@
 package com.wellnr.zttl.core.components;
 
-import com.wellnr.zttl.adapters.InMemoryNotesRepository;
 import com.wellnr.zttl.common.SearchReplaceString;
 import com.wellnr.zttl.common.StringMatch;
 import com.wellnr.zttl.common.StringMatches;
@@ -89,7 +88,7 @@ public class MarkdownEditor extends AnchorPane {
 
             while (matcher.find()) {
                if (matcher.group("URL") != null && matcher.start() <= pos && matcher.end() >= pos) {
-                  System.out.println(matcher.group());
+                  // System.out.println(matcher.group());
                }
             }
          }

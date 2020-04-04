@@ -364,8 +364,6 @@ public class AppController {
                .withLayoutSizeHeight(primaryStage.getHeight());
          }
 
-      System.out.println(newState.getLayoutDividerPosition());
-
       settingsRepository.saveState(newState);
    }
 
