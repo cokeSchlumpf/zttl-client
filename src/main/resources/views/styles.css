@@ -302,6 +302,11 @@
     -fx-font-weight: bolder;
 }
 
+.zttl--markdown-editor--text-area  .zttl--markdown-editor--todo {
+    -fx-font-weight: bolder;
+    -fx-fill: orange;
+}
+
 .zttl--markdown-editor--text-area .zttl--markdown-editor--list-item {
     -fx-fill: #3c9cdb;
 }
@@ -325,6 +330,14 @@
 
 .zttl--markdown-editor--text-area  .zttl--markdown-editor--search-highlight {
     -rtfx-background-color: #672f09;
+}
+
+.zttl--markdown-editor--text-area  .zttl--markdown-editor--bold {
+    -fx-font-weight: bolder;
+}
+
+.zttl--markdown-editor--text-area  .zttl--markdown-editor--italic {
+    -fx-font-style: italic;
 }
 
 .zttl--v-space {

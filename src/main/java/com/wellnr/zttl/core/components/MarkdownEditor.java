@@ -14,6 +14,8 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import org.commonmark.node.*;
+import org.commonmark.parser.Parser;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.model.StyleSpans;
@@ -30,6 +32,7 @@ import java.util.regex.Pattern;
 
 public class MarkdownEditor extends AnchorPane {
 
+   private static final String TODO_PATTERN = "^TODO: [^\n]*|\nTODO: [^\n]*";
    private static final String HEADLINE_PATTERN = "^#[^\n]*|\n#[^\n]*";
    private static final String BULLET_LIST_ITEM_PATTERN = "^[\\s]*\\*\\s|\n[\\s]*\\*\\s";
    private static final String DASH_LIST_ITEM_PATTERN = "^[\\s]*-\\s|\n[\\s]*\\*\\s";
@@ -37,15 +40,20 @@ public class MarkdownEditor extends AnchorPane {
    private static final String CODE_PATTERN = "```[a-z]*\\n[\\s\\S]*?\\n```|`[^\\n^`]+?`"; //""\n```[(?!.*(```))]*\n```|^```[(?!```)]*\n```|`[^\n^`]+`";
    private static final String URL_PATTERN = "(https?|ftp|file|note)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_.|]";
    private static final String RELATIVE_PATH_PATTERN = "[.]{1,2}/[-A-Za-z0-9+&@#/%=~_.|]*";
+   private static final String BOLD_PATTERN = "[*]{2}([^\\n^*]+?)[*]{2}";
+   private static final String ITALIC_PATTERN = "[a-zA-Z0-9 ]\\*([^\\n^*]+?)\\*[a-zA-Z0-9 ]";
 
    private static final Pattern PATTERN = Pattern.compile(
-      "(?<HEADLINE>" + HEADLINE_PATTERN + ")"
+      "(?<TODO>" + TODO_PATTERN + ")"
+         + "|(?<HEADLINE>" + HEADLINE_PATTERN + ")"
          + "|(?<BULLETLISTITEM>" + BULLET_LIST_ITEM_PATTERN + ")"
          + "|(?<DASHLISTITEM>" + DASH_LIST_ITEM_PATTERN + ")"
          + "|(?<CODE>" + CODE_PATTERN + ")"
          + "|(?<URL>" + URL_PATTERN + ")"
          + "|(?<RELATIVEPATH>" + RELATIVE_PATH_PATTERN + ")"
-         + "|(?<LINK>" + LINK_PATTERN + ")", Pattern.DOTALL);
+         + "|(?<LINK>" + LINK_PATTERN + ")"
+         + "|(?<BOLD>" + BOLD_PATTERN + ")"
+         + "|(?<ITALIC>" + ITALIC_PATTERN + ")", Pattern.DOTALL);
 
    public final StringProperty textProperty;
 
@@ -329,16 +337,19 @@ public class MarkdownEditor extends AnchorPane {
    }
 
    private void computeHighlighting() {
+      StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
       Matcher matcher = PATTERN.matcher(codeArea.getText());
       int lastKwEnd = 0;
 
-      StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+
       spansBuilder.add(Collections.emptyList(), 0);
 
       while (matcher.find()) {
          spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
 
-         if (matcher.group("HEADLINE") != null) {
+         if (matcher.group("TODO") != null) {
+            spansBuilder.add(Collections.singleton("zttl--markdown-editor--todo"), matcher.end() - matcher.start());
+         } else if (matcher.group("HEADLINE") != null) {
             spansBuilder.add(Collections.singleton("zttl--markdown-editor--headline"), matcher.end() - matcher.start());
          } else if (matcher.group("BULLETLISTITEM") != null || matcher.group("DASHLISTITEM") != null) {
             spansBuilder.add(Collections.singleton("zttl--markdown-editor--list-item"), matcher.end() - matcher.start());
@@ -350,6 +361,12 @@ public class MarkdownEditor extends AnchorPane {
             spansBuilder.add(Collections.emptyList(), 1);
          } else if (matcher.group("URL") != null || matcher.group("RELATIVEPATH") != null) {
             spansBuilder.add(Collections.singleton("zttl--markdown-editor--link"), matcher.end() - matcher.start());
+         } else if (matcher.group("BOLD") != null) {
+            spansBuilder.add(Collections.singleton("zttl--markdown-editor--bold"), matcher.end() - matcher.start());
+         } else if (matcher.group("ITALIC") != null) {
+            spansBuilder.add(Collections.emptyList(), 1);
+            spansBuilder.add(Collections.singleton("zttl--markdown-editor--italic"), matcher.end() - matcher.start() - 2);
+            spansBuilder.add(Collections.emptyList(), 1);
          }
 
          lastKwEnd = matcher.end();
