@@ -1,6 +1,5 @@
 package com.wellnr.zttl.core.components;
 
-import com.sun.javafx.application.HostServicesDelegate;
 import com.wellnr.zttl.Application;
 import com.wellnr.zttl.common.SearchReplaceString;
 import com.wellnr.zttl.common.StringMatch;
@@ -14,8 +13,6 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import org.commonmark.node.*;
-import org.commonmark.parser.Parser;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.model.StyleSpans;
@@ -37,7 +34,7 @@ public class MarkdownEditor extends AnchorPane {
    private static final String BULLET_LIST_ITEM_PATTERN = "^[\\s]*\\*\\s|\n[\\s]*\\*\\s";
    private static final String DASH_LIST_ITEM_PATTERN = "^[\\s]*-\\s|\n[\\s]*\\*\\s";
    private static final String LINK_PATTERN = "\\[[^\n\\[\\]]*]";
-   private static final String CODE_PATTERN = "```[a-z]*\\n[\\s\\S]*?\\n```|`[^\\n^`]+?`"; //""\n```[(?!.*(```))]*\n```|^```[(?!```)]*\n```|`[^\n^`]+`";
+   private static final String CODE_PATTERN = "```[a-z]*\\n[\\s\\S]*?\\n```|`[^\\n^`]+?`";
    private static final String URL_PATTERN = "(https?|ftp|file|note)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]*[-A-Za-z0-9+&@#/%=~_.|]";
    private static final String RELATIVE_PATH_PATTERN = "[.]{1,2}/[-A-Za-z0-9+&@#/%=~_.|]*";
    private static final String BOLD_PATTERN = "[*]{2}([^\\n^*]+?)[*]{2}";
